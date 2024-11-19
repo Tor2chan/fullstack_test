@@ -1,0 +1,74 @@
+<div class="card">
+    <div style="max-width: 80%; margin: 0 auto;">
+        <p-table
+        [value]="Users"
+        [paginator]="true"
+        [rows]="5"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        [rowsPerPageOptions]="[5, 10, 20]"
+    >
+                <ng-template pTemplate="header">
+                    <tr >
+                        <th style="width:22%">email</th>
+                        <th style="width:22%">username</th>
+                        <th style="width:22%">name</th>
+                        <th style="width:22%">role</th>
+                        <th>edit user</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-user>
+                    <tr>
+                        <td>{{user.email}}</td>
+                        <td>{{user.username}}</td>
+                        <td>{{user.name}}</td>
+                        <td>{{user.role}}</td>
+                        <td><button type="button"  (click)="toggleModal()" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">
+                                edit
+                            </button>
+                          <div *ngIf="showModal" class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
+                            <div class="relative w-auto my-6 mx-auto max-w-sm">
+                              <!--content-->
+                              <div class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                <!--header-->
+                                <div class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
+                                  <h3 class="text-xl font-semibold">
+                                    edit user
+                                  </h3>
+                                </div>
+                                <!--body-->
+                                <div class="relative py-4 flex-auto">
+                                    <div class="grid grid-cols-2 mt-3  mb-3">
+                                        <!-- Row 1 -->
+                                        <div class="p-2 rounded flex items-center justify-center h-20 w-40">                            
+                                            <p-dropdown 
+                                            [options]="availableRoles" 
+                                            [(ngModel)]="user.selectedRole" 
+                                            optionLabel="role"
+                                            placeholder="Select a role"
+                                            (onChange)="onRoleChange(user, user.selectedRole)" />
+                                        </div>
+                                        <!-- Row 2 -->
+                                        <div class="p-2 rounded flex items-center justify-center h-20">
+                                            <button type="button" class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mr-3 px-3 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">delete user</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--footer-->
+                                <div class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                                    <button type="button"  (click)="toggleModal()" class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
+                                        close
+                                    </button>
+                                    <button type="button"  (click)="toggleModal()" class="text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800">
+                                        save
+                                    </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        
+                    </tr>
+                </ng-template>
+        </p-table>
+    </div>
+</div>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="login-container">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="title-center"><h2>Sign in</h2></div>
+          
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input 
+              type="text" 
+              id="username"
+              formControlName="username"
+              class="form-control">
+            <div *ngIf="submitted && loginForm.get('username')?.invalid" class="error-message">
+              Enter your username
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input 
+              type="password" 
+              id="password"
+              formControlName="password"
+              class="form-control">
+            <div *ngIf="submitted && loginForm.get('password')?.invalid" class="error-message">
+              Enter your password
+            </div>
+          </div>
+  
+          <button type="submit">Sign in</button>
+          <button  type="button" (click)="signup_redirect()" >Sing up</button>
+        </form>
+      </div>
+</body>
+</html>

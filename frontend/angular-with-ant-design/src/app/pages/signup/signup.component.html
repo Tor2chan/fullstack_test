@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="login-container">
+        <form [formGroup]="SignupForm" (ngSubmit)="onSubmit()">
+          <div class="title-center"><h2>Sing up</h2></div>
+
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input 
+              type="text" 
+              id="email"
+              formControlName="email"
+              class="form-control">
+            <div *ngIf="submitted && SignupForm.get('email')?.invalid" class="error-message">
+              Enter your email
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input 
+              type="text" 
+              id="username"
+              formControlName="username"
+              class="form-control">
+            <div *ngIf="submitted && SignupForm.get('username')?.invalid" class="error-message">
+              Enter your username 
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input 
+              type="password" 
+              id="password"
+              formControlName="password"
+              class="form-control">
+            <div *ngIf="submitted && SignupForm.get('password')?.invalid" class="error-message">
+              Enter your password
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="confirmpassword">Confirm password:</label>
+            <input 
+              type="password" 
+              id="confirmpassword"
+              formControlName="confirmpassword"
+              class="form-control">
+            <div *ngIf="submitted && passwordMismatch" class="error-message">
+              Password mismatch
+            </div>
+            <div *ngIf="submitted && SignupForm.get('confirmpassword')?.invalid" class="error-message">
+              Confirm your password
+            </div>
+          </div>
+          
+          <button type="submit" (click)="onSubmit()">Sign up</button>
+          
+        </form>
+      </div>
+</body>
+</html>
+

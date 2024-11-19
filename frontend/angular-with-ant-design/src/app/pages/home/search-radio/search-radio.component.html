@@ -1,0 +1,35 @@
+<div class="card flex justify-content-center mt-3 mb-14">
+    <div class="flex flex-wrap gap-8">
+        <div class="flex align-items-center gap-3">
+            <label for="search_by1" class="ml-2">
+                Search All
+            </label>
+            <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1.5 px-2.5 border border-blue-500 hover:border-transparent rounded"
+                    (click)="click_search_all()">
+                Search
+            </button>
+        </div>
+        
+        <div class="flex align-items-center gap-3">
+            <label for="search_by2">
+                Search by email
+            </label>
+            <input type="text" pInputText [(ngModel)]="email_value" />
+            <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1.5 px-2.5 border border-blue-500 hover:border-transparent rounded"
+                    (click)="click_search_email()">
+                Search
+            </button>
+        </div>
+        
+        <div class="flex align-items-center gap-3">
+            <label for="search_by3">
+                Search by username
+            </label>
+            <input type="text" pInputText [(ngModel)]="username_value" />
+            <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1.5 px-2.5 border border-blue-500 hover:border-transparent rounded"
+                    (click)="click_search_username()">
+                Search
+            </button>
+        </div>
+    </div>
+</div>

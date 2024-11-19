@@ -1,0 +1,14 @@
+.edit-role-table .edit-role-cell {
+    height: 150px;  /* ปรับความสูงของเซลล์ */
+    vertical-align: middle;  /* จัดให้ข้อความอยู่กึ่งกลางในแนวตั้ง */
+}
+
+/* หรือถ้าต้องการปรับทั้งแถว */
+.edit-role-table tr {
+    height: 150px;
+}
+
+/* ถ้าต้องการปรับขนาด dropdown ด้วย */
+:host ::ng-deep .p-dropdown {
+    height: 50px;  /* ปรับความสูงของ dropdown */
+}

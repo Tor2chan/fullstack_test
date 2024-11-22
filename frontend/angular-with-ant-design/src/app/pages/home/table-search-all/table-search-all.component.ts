@@ -1,11 +1,9 @@
-import { Component} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
-import { User } from './user/user';
-import { Users } from './users/users';
 import { DropdownModule } from 'primeng/dropdown';
-import { FormsModule } from '@angular/forms';  
-
+import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { UserService, User } from '../../../services/user.service';
 
 interface Role {
     role: string;
@@ -13,39 +11,86 @@ interface Role {
 
 @Component({
     selector: 'search-all',
-    templateUrl: './table-search-all.component.html',  
+    templateUrl: './table-search-all.component.html',
     standalone: true,
-    imports: [TableModule, CommonModule, DropdownModule, FormsModule],
-    providers: [Users],
+    imports: [
+        TableModule, 
+        CommonModule, 
+        DropdownModule, 
+        FormsModule, 
+        ReactiveFormsModule
+    ],
 })
-export class TableAll  {
-    Users!: User[];
+export class TableAll implements OnInit {
+    Users: User[] = [];
+    selectedUser!: User;
     availableRoles: Role[] = [
         { role: 'admin' },
         { role: 'user' },
     ];
 
-    constructor(private users: Users) {}
+    showModal = false;
+
+    constructor(private userService: UserService) {}
 
     ngOnInit() {
-        this.users.getUsers().then((data) => {
-            // เพิ่ม selectedRole ให้กับ user แต่ละคน
-            this.Users = data.map(user => ({
-                ...user,
-                selectedRole: { role: user.role } // กำหนดค่าเริ่มต้นจาก role ปัจจุบัน
-            }));
+        this.loadUsers();
+    }
+
+    loadUsers() {
+        this.userService.getUsers().subscribe({
+            next: (data) => {
+                this.Users = data.map(user => ({
+                    ...user,
+                    selectedRole: { role: user.role }
+                }));
+            },
+            error: (error) => {
+                console.error('Error fetching users:', error);
+            }
         });
     }
 
-    // เพิ่มฟังก์ชันสำหรับจัดการการเปลี่ยนแปลง role
-    onRoleChange(user: any, newRole: Role) {
-        user.selectedRole = newRole;
-        // ทำการอัพเดท role ใน backend ที่นี่ถ้าต้องการ
-        console.log(`Updated role for user ${user.username} to ${newRole.role}`);
+    toggleModal(user?: User) {
+        if (user) {
+            this.selectedUser = { ...user }; // Create a copy of the user for editing
+        }
+        this.showModal = !this.showModal;
     }
 
-    showModal = false;
-    toggleModal(){
-      this.showModal = !this.showModal;
+    onRoleChange(user: User, newRole: Role) {
+        if (!user.id) return;
+        
+        this.userService.updateUserRole(user.id, newRole.role).subscribe({
+            next: (updatedUser) => {
+                console.log(`Updated role for user ${user.username} to ${newRole.role}`);
+                user.role = newRole.role;
+                user.selectedRole = newRole;
+            },
+            error: (error) => {
+                console.error('Error updating user role:', error);
+                // Reset to previous role if update fails
+                user.selectedRole = { role: user.role };
+            }
+        });
+    }
+
+    deleteUser(userId: number) {
+        if (confirm('Are you sure you want to delete this user?')) {
+            this.userService.deleteUser(userId).subscribe({
+                next: () => {
+                    this.Users = this.Users.filter(user => user.id !== userId);
+                    this.toggleModal();
+                },
+                error: (error) => {
+                    console.error('Error deleting user:', error);
+                }
+            });
+        }
+    }
+
+    saveUserChanges() {
+        // Here you can add any additional save logic if needed
+        this.toggleModal();
     }
 }

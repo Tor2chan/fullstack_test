@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { TestService } from './services/test.service';
 import { User, UserService } from './services/user.service';
 import { FormsModule } from '@angular/forms';
 

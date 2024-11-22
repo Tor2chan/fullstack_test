@@ -1,15 +1,8 @@
 
 <div>
     <router-outlet></router-outlet> 
-    <div *ngIf="tests.length > 0">
-        <ul>
-          <li *ngFor="let test of tests">{{ test.name }}</li>
-        </ul>
-      </div>
-      
-      <div *ngIf="tests.length === 0">
-        <p>No tests available.</p>
-      </div>
-      
+    <div *ngFor="let user of users">
+      <p class="flex justify-center">name: {{ user.name }}  email: {{ user.email }}</p>
+    </div>
 </div>
   

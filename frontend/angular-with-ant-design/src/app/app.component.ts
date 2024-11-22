@@ -9,20 +9,21 @@ import { TestService } from './services/test.service';
   imports: [RouterModule, CommonModule]
 })
 export class AppComponent implements OnInit {
-  message = '';
+  tests: any[] = [];
 
   constructor(private testService: TestService) {}
 
+ 
   ngOnInit() {
-    this.testService.test().subscribe({
-      next: (response) => {
-        this.message = response.message; // ใช้ key `message` จาก JSON
+    this.testService.getTests().subscribe(
+      data => {
+        this.tests = data;
+        console.log(data); // ดูข้อมูลที่ได้จาก API
       },
-      error: (err) => {
-        console.error('Error fetching API:', err);
-        this.message = 'Error fetching data';
-      },
-    });
+      error => {
+        console.error('Error fetching data from API', error);
+      }
+    );
   }
-    
+
 }

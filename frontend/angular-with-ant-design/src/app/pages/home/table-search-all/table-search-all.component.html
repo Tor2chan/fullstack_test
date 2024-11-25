@@ -6,6 +6,9 @@
             [rows]="5"
             [tableStyle]="{ 'min-width': '50rem' }"
             [rowsPerPageOptions]="[5, 10, 20]"
+            [sortField]="'id'"
+            [sortOrder]="1"
+            [customSort]="false"
         >
             <ng-template pTemplate="header">
                 <tr>
@@ -35,7 +38,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal part remains the same -->
 <div *ngIf="showModal" 
      class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
     <div class="relative w-auto my-6 mx-auto max-w-sm">

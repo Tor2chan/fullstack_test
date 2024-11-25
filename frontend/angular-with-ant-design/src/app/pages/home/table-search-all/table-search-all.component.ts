@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserService, User } from '../../../services/user.service';
 
 interface Role {
@@ -40,6 +40,7 @@ export class TableAll implements OnInit {
     loadUsers() {
         this.userService.getUsers().subscribe({
             next: (data) => {
+                // ทำให้แน่ใจว่า selectedRole มีค่าเสมอ
                 this.Users = data.map(user => ({
                     ...user,
                     selectedRole: { role: user.role }
@@ -53,14 +54,17 @@ export class TableAll implements OnInit {
 
     toggleModal(user?: User) {
         if (user) {
-            this.selectedUser = { ...user }; // Create a copy of the user for editing
+            this.selectedUser = {
+                ...user,
+                selectedRole: { role: user.role } // กำหนดค่า selectedRole เสมอ
+            };
         }
         this.showModal = !this.showModal;
     }
 
     onRoleChange(user: User, newRole: Role) {
-        if (!user.id) return;
-        
+        if (!user.id || !newRole) return;
+
         this.userService.updateUserRole(user.id, newRole.role).subscribe({
             next: (updatedUser) => {
                 console.log(`Updated role for user ${user.username} to ${newRole.role}`);
@@ -69,7 +73,6 @@ export class TableAll implements OnInit {
             },
             error: (error) => {
                 console.error('Error updating user role:', error);
-                // Reset to previous role if update fails
                 user.selectedRole = { role: user.role };
             }
         });

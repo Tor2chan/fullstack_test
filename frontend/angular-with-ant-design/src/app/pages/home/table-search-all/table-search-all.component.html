@@ -52,12 +52,10 @@
                 <div class="grid grid-cols-2 mt-3 mb-3">
                     <div class="p-2 rounded flex items-center justify-center h-20 w-40">                            
                         <p-dropdown 
-                            [options]="availableRoles" 
-                            [(ngModel)]="selectedUser.selectedRole" 
-                            [ngModelOptions]="{standalone: true}"
-                            optionLabel="role"
-                            placeholder="Select a role"
-                            (onChange)="onRoleChange(selectedUser, selectedUser.selectedRole)">
+                        [options]="availableRoles" 
+                        [(ngModel)]="selectedUser.selectedRole" 
+                        optionLabel="role"
+                        (onChange)="onRoleChange(selectedUser, $event.value)">
                         </p-dropdown>
                     </div>
                     <div class="p-2 rounded flex items-center justify-center h-20">

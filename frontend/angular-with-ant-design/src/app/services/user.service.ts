@@ -9,7 +9,7 @@ export interface User {
     email: string;
     role: string;
     password: string;
-    selectedRole?: { role: string }; // เพิ่มสำหรับ dropdown ใน UI
+    selectedRole: { role: string }; 
 }
 
 @Injectable({

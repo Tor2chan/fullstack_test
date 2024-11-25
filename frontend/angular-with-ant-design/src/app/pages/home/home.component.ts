@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -7,6 +7,7 @@ import { TableAll } from './table-search-all/table-search-all.component';
 import { TableEmail } from './table-search-email/table-search-email';
 import { TableUsername } from './table-search-username/table-search-username';
 import { InputTextModule } from 'primeng/inputtext';
+import { UserService, User } from '../../services/user.service';
 
 @Component({
   selector: 'app-home',
@@ -24,7 +25,7 @@ import { InputTextModule } from 'primeng/inputtext';
                 <!--header-->
                 <div class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
                   <h3 class="text-xl font-semibold">
-                    edit user
+                    Add user
                   </h3>
                 </div>
                 <!--body-->
@@ -35,6 +36,8 @@ import { InputTextModule } from 'primeng/inputtext';
                     <input 
                       type="email" 
                       id="email" 
+                      name="email"
+                      [(ngModel)] = "newUser.email"
                       class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Enter email"
                     />
@@ -44,15 +47,30 @@ import { InputTextModule } from 'primeng/inputtext';
                     <input 
                       type="text" 
                       id="username"
+                      name="username"
+                      [(ngModel)] = "newUser.username"
                       class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Enter username"
                     />
+                    
+                    <!-- Row 3: Name  -->
+                    <label for="name" class="text-gray-700 font-medium self-center">Name</label>
+                    <input 
+                      type="text" 
+                      id="name"
+                      name="name"
+                      [(ngModel)] = "newUser.name"
+                      class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter name"
+                    />
 
-                    <!-- Row 3: Password -->
+                    <!-- Row 4: Password -->
                     <label for="password" class="text-gray-700 font-medium self-center">Password</label>
                     <input 
                       type="password" 
                       id="password" 
+                      name="password"
+                      [(ngModel)] = "newUser.password"
                       class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Enter password"
                     />
@@ -63,7 +81,7 @@ import { InputTextModule } from 'primeng/inputtext';
                     <button type="button"  (click)="toggleModal()" class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
                         close
                     </button>
-                    <button type="button"  (click)="toggleModal()" class="text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800">
+                    <button type="button"  (click)="addUser()" class="text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800">
                         save
                     </button>
                 </div>
@@ -99,6 +117,11 @@ import { InputTextModule } from 'primeng/inputtext';
 })
 
 export class HomeComponent {
+  users: User[] = [];
+  newUser: Partial<User> = {};
+
+  constructor(private userService: UserService){}
+
   showAll = false;
   showEmail = false;
   showUsername = false;
@@ -107,10 +130,34 @@ export class HomeComponent {
   showModal = false;
 
   // add_user
-  add_email!: string;
-  add_username!: string;
-  add_password!: string;
+  ngOnInit(): void {
+    this.userService.getUsers().subscribe((data) => (this.users = data));
+  }
 
+
+  addUser(): void {
+    if (this.newUser.name && this.newUser.email && this.newUser.username && this.newUser.password) {
+      // กำหนดค่า role ก่อนส่งไป
+      if (!this.newUser.role) {
+        this.newUser.role = "user";  // กำหนด role เป็น "USER" หากไม่ได้ระบุ
+      }
+      this.userService.addUser(this.newUser as User).subscribe(
+        (user) => {
+          this.users.push(user);
+          this.newUser = {};
+          this.toggleModal();
+          this.reload()
+        },
+        (error) => {
+          console.error('Error adding user:', error);
+        }
+      );
+    }
+  }
+  
+  reload(){
+    window.location.reload()
+  }
 
   toggleModal(){
     this.showModal = !this.showModal;

@@ -24,8 +24,13 @@ public class UserController {
 
     @PostMapping
     public User createUser(@RequestBody User user) {
+        // ตรวจสอบว่า role ถูกส่งมาหรือไม่ หากไม่ให้กำหนดค่า default
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("user");  // กำหนดค่า default ให้เป็น "USER"
+        }
         return userRepository.save(user);
     }
+    
 
     @PutMapping("/{userId}/role")
     public ResponseEntity<?> updateUserRole(@PathVariable Long userId, @RequestBody RoleUpdate roleUpdate) {

@@ -15,6 +15,11 @@ public class User {
     private String password;
 
     // Getters and Setters
+
+    public User() {
+        this.role = "user";  // กำหนดค่า default เป็น "USER"
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

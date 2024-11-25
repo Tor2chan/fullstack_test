@@ -15,11 +15,8 @@ export class AppComponent implements OnInit {
   users: User[] = [];
   newUser: Partial<User> = {};
 
-  tests: any[] = [];
-
   constructor(private userService: UserService) {}
 
- 
   ngOnInit(): void {
     this.userService.getUsers().subscribe((data) => (this.users = data));
   }

@@ -55,8 +55,8 @@
                         [options]="availableRoles" 
                         [(ngModel)]="selectedUser.selectedRole" 
                         optionLabel="role"
-                        (onChange)="onRoleChange(selectedUser, $event.value)">
-                        </p-dropdown>
+                        (onChange)="onRoleChange(selectedUser, $event)">
+                    </p-dropdown>
                     </div>
                     <div class="p-2 rounded flex items-center justify-center h-20">
                         <button type="button" 

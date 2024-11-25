@@ -40,7 +40,6 @@ export class TableAll implements OnInit {
     loadUsers() {
         this.userService.getUsers().subscribe({
             next: (data) => {
-                // ทำให้แน่ใจว่า selectedRole มีค่าเสมอ
                 this.Users = data.map(user => ({
                     ...user,
                     selectedRole: { role: user.role }
@@ -56,28 +55,28 @@ export class TableAll implements OnInit {
         if (user) {
             this.selectedUser = {
                 ...user,
-                selectedRole: { role: user.role } // กำหนดค่า selectedRole เสมอ
+                selectedRole: { role: user.role }
             };
         }
         this.showModal = !this.showModal;
     }
 
-    onRoleChange(user: User, newRole: Role) {
-        if (!user.id || !newRole) return;
-
-        this.userService.updateUserRole(user.id, newRole.role).subscribe({
-            next: (updatedUser) => {
-                console.log(`Updated role for user ${user.username} to ${newRole.role}`);
-                user.role = newRole.role;
-                user.selectedRole = newRole;
-            },
-            error: (error) => {
-                console.error('Error updating user role:', error);
-                user.selectedRole = { role: user.role };
-            }
-        });
+    onRoleChange(user: User, event: any) {
+        if (!user.id) return;
+    
+        const newRole = event.value;
+    
+        // อัพเดทค่าของ selectedRole ของ user ใน modal
+        this.selectedUser = {
+            ...user,
+            role: newRole.role, // อัพเดท role ที่เลือก
+            selectedRole: newRole
+        };
+    
+        console.log(`Changed role for user ${user.username} to ${newRole.role}`);
     }
 
+    
     deleteUser(userId: number) {
         if (confirm('Are you sure you want to delete this user?')) {
             this.userService.deleteUser(userId).subscribe({
@@ -93,7 +92,31 @@ export class TableAll implements OnInit {
     }
 
     saveUserChanges() {
-        // Here you can add any additional save logic if needed
-        this.toggleModal();
+        if (this.selectedUser && this.selectedUser.id) {
+            // ส่งค่า role จาก selectedRole
+            const newRole = this.selectedUser.selectedRole.role;
+            
+            this.userService.updateUserRole(this.selectedUser.id, newRole).subscribe({
+                next: (updatedUser) => {
+                    const index = this.Users.findIndex(u => u.id === this.selectedUser.id);
+                    if (index !== -1) {
+                        this.Users[index] = {
+                            ...this.Users[index],
+                            role: newRole,
+                            selectedRole: { role: newRole }
+                        };
+                    }
+                    console.log(`Successfully updated role for user ${this.selectedUser.username}`);
+                    this.toggleModal();
+                    this.loadUsers();
+                },
+                error: (error) => {
+                    console.error('Error updating user role:', error);
+                    alert('Failed to update user role. Please try again.');
+                }
+            });
+        } else {
+            this.toggleModal();
+        }
     }
 }

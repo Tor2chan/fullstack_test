@@ -28,9 +28,8 @@ export class UserService {
         return this.http.post<User>(this.apiUrl, user);
     }
 
-    // เพิ่มเมธอดสำหรับอัพเดท role
     updateUserRole(userId: number, role: string): Observable<User> {
-        return this.http.patch<User>(`${this.apiUrl}/${userId}/role`, { role });
+        return this.http.put<User>(`${this.apiUrl}/${userId}/role`, { role });
     }
 
     // เพิ่มเมธอดสำหรับลบ user (ถ้าจำเป็น)

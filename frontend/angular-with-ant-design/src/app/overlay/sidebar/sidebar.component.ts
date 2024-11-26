@@ -40,6 +40,7 @@ export class SidebarComponent implements OnInit {
     ];
   }
 
+ 
   signup_redirect() {
     this.router.navigate(['signup']);
   }

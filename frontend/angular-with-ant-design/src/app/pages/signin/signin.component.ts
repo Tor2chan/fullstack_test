@@ -60,7 +60,7 @@ export class SigninComponent {
           if (user) {
             // save localStorage 
             localStorage.setItem('currentUser', JSON.stringify(user));
-            
+  
             // save session
             sessionStorage.setItem('sessionUser', JSON.stringify({ 
               email: user.email,
@@ -69,11 +69,11 @@ export class SigninComponent {
               role: user.role 
             }));
   
-            // route
+            // route and refresh
             if (user.role === 'admin') {
-              this.router.navigate(['admin']);
+              this.router.navigate(['admin']).then(() => window.location.reload());
             } else {
-              this.router.navigate(['user-info']);
+              this.router.navigate(['user-info']).then(() => window.location.reload());
             } 
           } else {
             this.loginError = true; 
@@ -86,6 +86,5 @@ export class SigninComponent {
       });
     }
   }
-
   
 }

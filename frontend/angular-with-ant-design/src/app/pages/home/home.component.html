@@ -74,25 +74,23 @@
       </div>
   </div>
       
-  <div>
-    <app-search-radio 
-      (searchAll)="onSearchAll()"
-      (searchByEmail)="onSearchByEmail($event)"
-      (searchByUsername)="onSearchByUsername($event)">
-    </app-search-radio>
-  </div>
-  
+    <!-- component -->
+    <div>
+      <app-search-radio 
+        (searchAll)="onSearchAll()"
+        (searchByEmail)="onSearchByEmail($event)"
+        (searchByUsername)="onSearchByUsername($event)">
+      </app-search-radio>
+    </div>
 
-  <div *ngIf="showAll">
-    <search-all></search-all>
-  </div>
+    <div *ngIf="showAll">
+      <search-all></search-all>
+    </div>
   
-<!-- {{email_value}} {{email_value}} -->
-  <div *ngIf="showEmail">
-    <app-table-email [filterEmail]="email_value"></app-table-email>
-  </div>
-  
-
-  <div *ngIf="showUsername">
-  <app-table-username [filterUsername]="username_value"></app-table-username>
-  </div>
+    <div *ngIf="showEmail">
+      <app-table-email [filterEmail]="email_value"></app-table-email>
+    </div>
+    
+    <div *ngIf="showUsername">
+      <app-table-username [filterUsername]="username_value"></app-table-username>
+    </div>

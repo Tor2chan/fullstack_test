@@ -7,17 +7,17 @@
 </head>
 <body>
     <div class="login-container">
-        <form [formGroup]="SignupForm" (ngSubmit)="onSubmit()">
-          <div class="title-center"><h2>Sing up</h2></div>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="title-center"><h2>Sign up</h2></div>
 
           <div class="form-group">
-            <label for="email">Email:</label>
+            <label for="email">email:</label>
             <input 
               type="text" 
               id="email"
               formControlName="email"
               class="form-control">
-            <div *ngIf="submitted && SignupForm.get('email')?.invalid" class="error-message">
+            <div *ngIf="submitted && loginForm.get('email')?.invalid" class="error-message">
               Enter your email
             </div>
           </div>
@@ -29,11 +29,11 @@
               id="username"
               formControlName="username"
               class="form-control">
-            <div *ngIf="submitted && SignupForm.get('username')?.invalid" class="error-message">
-              Enter your username 
+            <div *ngIf="submitted && loginForm.get('username')?.invalid" class="error-message">
+              Enter your username
             </div>
           </div>
-          
+
           <div class="form-group">
             <label for="name">name:</label>
             <input 
@@ -41,7 +41,7 @@
               id="name"
               formControlName="name"
               class="form-control">
-            <div *ngIf="submitted && SignupForm.get('name')?.invalid" class="error-message">
+            <div *ngIf="submitted && loginForm.get('name')?.invalid" class="error-message">
               Enter your name
             </div>
           </div>
@@ -53,30 +53,13 @@
               id="password"
               formControlName="password"
               class="form-control">
-            <div *ngIf="submitted && SignupForm.get('password')?.invalid" class="error-message">
+            <div *ngIf="submitted && loginForm.get('password')?.invalid" class="error-message">
               Enter your password
             </div>
           </div>
-          
-          <div class="form-group">
-            <label for="confirmpassword">Confirm password:</label>
-            <input 
-              type="password" 
-              id="confirmpassword"
-              formControlName="confirmpassword"
-              class="form-control">
-            <div *ngIf="submitted && passwordMismatch" class="error-message">
-              Password mismatch
-            </div>
-            <div *ngIf="submitted && SignupForm.get('confirmpassword')?.invalid" class="error-message">
-              Confirm your password
-            </div>
-          </div>
-          
-          <button type="submit" (click)="onSubmit()">Sign up</button>
-          
+  
+          <button type="submit">Sign up</button>
         </form>
       </div>
 </body>
 </html>
-

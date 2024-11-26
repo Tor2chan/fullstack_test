@@ -134,6 +134,7 @@ export class HomeComponent {
     this.userService.getUsers().subscribe((data) => (this.users = data));
   }
 
+  
 
   addUser(): void {
     if (this.newUser.name && this.newUser.email && this.newUser.username && this.newUser.password) {

@@ -96,7 +96,7 @@ export class TableEmail {
       selectedRole: newRole
     };
 
-    console.log(`Changed role for user ${user.username} to ${newRole.role}`);
+    console.log(`Updated role for user ${user.username} to ${newRole.role}`);
   }
 
   showModal = false;
@@ -116,12 +116,17 @@ export class TableEmail {
         next: () => {
           this.Users = this.Users.filter(user => user.id !== userId);
           this.toggleModal();
+          this.reload();
         },
         error: (error) => {
           console.error('Error deleting user:', error);
         }
       });
     }
+  }
+
+  reload(){
+    window.location.reload();
   }
 
   saveUserChanges() {

@@ -1,1 +1,11 @@
-<h1 class="flex justify-center mt-5">แสร้งว่าเป็นหน้า Info</h1>
+<div *ngIf="user; else noUser" class="mt-5">
+    <h1 class="flex justify-center m-2">Welcome, {{ user.username }}</h1>
+    <p class="flex justify-center m-2">Your role is: <strong>{{ user.role }}</strong></p>
+    <p class="flex justify-center m-2">Email: <strong>{{ user.email }}</strong></p>
+    <p class="flex justify-center m-2">Name: <strong>{{ user.name }}</strong></p>
+  </div>
+  
+  <ng-template #noUser>
+    <h1>No user logged in</h1>
+  </ng-template>
+  

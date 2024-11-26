@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export interface User {
     id: number;
@@ -32,8 +33,18 @@ export class UserService {
         return this.http.put<User>(`${this.apiUrl}/${userId}/role`, { role });
     }
 
-    // เพิ่มเมธอดสำหรับลบ user (ถ้าจำเป็น)
     deleteUser(userId: number): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/${userId}`);
+    }
+
+    authenticateUser(username: string, password: string): Observable<User | null> {
+        return this.http.get<User[]>(`${this.apiUrl}?username=${username}`).pipe(
+            map(users => {
+                const user = users.find(u => 
+                    u.username === username && u.password === password
+                );
+                return user || null;
+            })
+        );
     }
 }

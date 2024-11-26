@@ -7,15 +7,16 @@
 </head>
 <body>
     <div class="card">
-        <p-menubar [model]="items" >
+        <p-menubar [model]="items">
             <ng-template pTemplate="end">
                 <div class="flex align-items-center gap-4 mr-4">
-                    <button (click)="signin_redirect()">Signin</button>
-                    <button (click)="signup_redirect()">Signup</button>
+
+                    <button *ngIf="isLoggedIn" (click)="logout()">Logout</button>
+                    <button *ngIf="!isLoggedIn" (click)="signin_redirect()">Signin</button>
+                    <button *ngIf="!isLoggedIn" (click)="signup_redirect()">Signup</button>
                 </div>
             </ng-template>
-        </p-menubar> 
+        </p-menubar>
     </div>
 </body>
 </html>
-

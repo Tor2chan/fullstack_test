@@ -9,17 +9,24 @@
     <div class="login-container">
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <div class="title-center"><h2>Sign in</h2></div>
+
+            <div *ngIf="loginError" class="error-message">
+                Username or password is incorrect
+            </div>
           
           <div class="form-group">
             <label for="username">Username:</label>
             <input 
-              type="text" 
-              id="username"
-              formControlName="username"
-              class="form-control">
+            type="text" 
+            id="username"
+            formControlName="username"
+            class="form-control"
+            [ngClass]="{'is-invalid': submitted && loginForm.get('username')?.invalid}">
+
             <div *ngIf="submitted && loginForm.get('username')?.invalid" class="error-message">
               Enter your username
             </div>
+            
           </div>
   
           <div class="form-group">

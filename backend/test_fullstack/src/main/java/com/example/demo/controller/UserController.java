@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:4200") // เพิ่ม CORS
+@CrossOrigin(origins = "http://localhost:4200") 
 public class UserController {
 
     @Autowired
@@ -24,9 +24,9 @@ public class UserController {
 
     @PostMapping
     public User createUser(@RequestBody User user) {
-        // ตรวจสอบว่า role ถูกส่งมาหรือไม่ หากไม่ให้กำหนดค่า default
+        // set role
         if (user.getRole() == null || user.getRole().isEmpty()) {
-            user.setRole("user");  // กำหนดค่า default ให้เป็น "USER"
+            user.setRole("user");  
         }
         return userRepository.save(user);
     }
@@ -38,7 +38,6 @@ public class UserController {
             User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
-            // Print debug information
             System.out.println("Updating user: " + userId);
             System.out.println("New role: " + roleUpdate.getRole());
 
@@ -47,7 +46,7 @@ public class UserController {
             
             return ResponseEntity.ok(updatedUser);
         } catch (Exception e) {
-            e.printStackTrace(); // Print stack trace for debugging
+            e.printStackTrace(); 
             return ResponseEntity.internalServerError().body("Error updating user role: " + e.getMessage());
         }
     }

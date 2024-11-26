@@ -20,13 +20,14 @@ export class SidebarComponent implements OnInit{
   ngOnInit() {
       this.items = [
           {
-              label: 'Home',
+              label: 'Admin',
               icon: 'pi pi-home',
-              command: () => {this.router.navigate(['home'])}
+              command: () => {this.router.navigate(['admin'])}
           },
           {
-              label: 'Features',
-              icon: 'pi pi-star'
+              label: 'Info',
+              icon: 'pi pi-star',
+              command: () => {this.router.navigate(['user-info'])}
           }
       ]
   }

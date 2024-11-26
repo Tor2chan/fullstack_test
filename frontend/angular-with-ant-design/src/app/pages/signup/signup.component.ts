@@ -41,7 +41,7 @@ export class SignupComponent {
   }
 
   home_redirect(){
-    this.router.navigate(['home']);
+    this.router.navigate(['/']);
   }
 
 addUser(): void {

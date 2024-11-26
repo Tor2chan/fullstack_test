@@ -1,11 +1,11 @@
-<div *ngIf="user; else noUser" class="mt-5">
-    <h1 class="flex justify-center m-2">Welcome, {{ user.username }}</h1>
-    <p class="flex justify-center m-2">Your role is: <strong>{{ user.role }}</strong></p>
+<div *ngIf="user" class="mt-5">
+    <h1 class="flex justify-center m-2">Username: <strong>{{ user.username }}</strong></h1>
+    <p class="flex justify-center m-2">Role: <strong>{{ user.role }}</strong></p>
     <p class="flex justify-center m-2">Email: <strong>{{ user.email }}</strong></p>
     <p class="flex justify-center m-2">Name: <strong>{{ user.name }}</strong></p>
   </div>
   
-  <ng-template #noUser>
+  <!-- <ng-template #noUser>
     <h1>No user logged in</h1>
-  </ng-template>
+  </ng-template> -->
   

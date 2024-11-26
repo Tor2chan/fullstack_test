@@ -19,7 +19,6 @@ export class SignupComponent {
   loginForm: FormGroup;
   submitted = false;  
   users: User[] = [];
-  newUser: Partial<User> = {};
 
   constructor(private fb: FormBuilder, private userService: UserService, private router: Router) {
     this.loginForm = this.fb.group({
@@ -45,25 +44,30 @@ export class SignupComponent {
     this.router.navigate(['home']);
   }
 
-  addUser(): void {
-    if (this.newUser.name && this.newUser.email && this.newUser.username && this.newUser.password) {
-  
-      if (!this.newUser.role) {
-        this.newUser.role = "user";
-      }
-  
-      this.userService.addUser(this.newUser as User).subscribe({
-        next: (user) => {
-          this.users.push(user);
-          this.newUser = {};
-          this.home_redirect();
-        },
-        error: (error) => {
-          console.error('Error adding user:', error);
-        }
-      });
-    }
+addUser(): void {
+  if (this.loginForm.valid) {
+    const formValue = this.loginForm.value;
+    const newUser: Partial<User> = {
+      email: formValue.email,
+      username: formValue.username,
+      name: formValue.name,
+      password: formValue.password,
+      role: "user", 
+    };
+
+    this.userService.addUser(newUser as User).subscribe({
+      next: (user) => {
+        this.users.push(user);
+        this.loginForm.reset(); 
+        this.home_redirect();
+      },
+      error: (error) => {
+        console.error('Error adding user:', error);
+      },
+    });
   }
+}
+
 
 
 }

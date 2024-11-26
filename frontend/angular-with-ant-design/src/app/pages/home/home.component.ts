@@ -8,11 +8,13 @@ import { TableEmail } from './table-search-email/table-search-email';
 import { TableUsername } from './table-search-username/table-search-username';
 import { InputTextModule } from 'primeng/inputtext';
 import { UserService, User } from '../../services/user.service';
+import { DialogModule } from 'primeng/dialog';
+
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule,CommonModule,RadioButtonModule,TableEmail,TableAll,TableUsername,SearchRadioComponent,InputTextModule],
+  imports: [FormsModule,CommonModule,RadioButtonModule,TableEmail,TableAll,TableUsername,SearchRadioComponent,InputTextModule,DialogModule],
   templateUrl: `./home.component.html`,
   styleUrl: './home.component.css'
 })
@@ -29,6 +31,7 @@ export class HomeComponent {
   email_value: string = '';
   username_value: string = '';
   showModal = false;
+  visible: boolean = false;
 
   // add_user
   ngOnInit(): void {
@@ -36,24 +39,28 @@ export class HomeComponent {
   }
 
   addUser(): void {
-    if (this.newUser.name && this.newUser.email && this.newUser.username && this.newUser.password) {
-  
-      if (!this.newUser.role) {
-        this.newUser.role = "user";
-      }
-  
-      this.userService.addUser(this.newUser as User).subscribe({
-        next: (user) => {
-          this.users.push(user);
-          this.newUser = {};
-          this.toggleModal();
-          this.reload();
-        },
-        error: (error) => {
-          console.error('Error adding user:', error);
-        }
-      });
+    // Check if any of the required fields are empty
+    if (!this.newUser.name || !this.newUser.email || !this.newUser.username || !this.newUser.password) {
+      // Show dialog if any field is empty
+      this.showDialog();
+      return;
     }
+  
+    if (!this.newUser.role) {
+      this.newUser.role = "user";
+    }
+  
+    this.userService.addUser(this.newUser as User).subscribe({
+      next: (user) => {
+        this.users.push(user);
+        this.newUser = {};
+        this.toggleModal();
+        this.reload();
+      },
+      error: (error) => {
+        console.error('Error adding user:', error);
+      }
+    });
   }
   
   
@@ -64,6 +71,16 @@ export class HomeComponent {
   toggleModal(){
     this.showModal = !this.showModal;
   }
+
+
+  showDialog() {
+    this.visible = true;
+}
+
+  onDialogClose(){
+    this.visible = false;
+  }
+
   onSearchAll() {
     this.showAll = true;
     this.showEmail = false;

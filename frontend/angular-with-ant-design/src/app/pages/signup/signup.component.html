@@ -15,7 +15,6 @@
             <input 
               type="text" 
               id="email"
-              [(ngModel)] = "newUser.email"
               formControlName="email"
               class="form-control">
             <div *ngIf="submitted && loginForm.get('email')?.invalid" class="error-message">
@@ -28,7 +27,6 @@
             <input 
               type="text" 
               id="username"
-              [(ngModel)] = "newUser.username"
               formControlName="username"
               class="form-control">
             <div *ngIf="submitted && loginForm.get('username')?.invalid" class="error-message">
@@ -41,7 +39,6 @@
             <input 
               type="text" 
               id="name"
-              [(ngModel)] = "newUser.name"
               formControlName="name"
               class="form-control">
             <div *ngIf="submitted && loginForm.get('name')?.invalid" class="error-message">
@@ -54,7 +51,6 @@
             <input 
               type="password" 
               id="password"
-              [(ngModel)] = "newUser.password"
               formControlName="password"
               class="form-control">
             <div *ngIf="submitted && loginForm.get('password')?.invalid" class="error-message">

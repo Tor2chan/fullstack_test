@@ -16,11 +16,11 @@ import {
     CommonModule,
     ReactiveFormsModule,  
     FormsModule ],
-  templateUrl: './welcome.component.html',
-  styleUrl: './welcome.component.css'
+  templateUrl: './signin.component.html',
+  styleUrl: './signin.component.css'
 })
 
-export class WelcomeComponent {
+export class SigninComponent {
   loginForm: FormGroup;
   submitted = false;  
 

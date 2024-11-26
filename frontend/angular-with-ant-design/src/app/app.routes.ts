@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { WelcomeComponent } from './pages/welcome/welcome.component';
+import { SigninComponent } from './pages/signin/signin.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { HomeComponent } from './pages/home/home.component';
 import { OverlayComponent } from './overlay/over.component';
@@ -9,7 +9,7 @@ export const routes: Routes = [
   {path: '', component: OverlayComponent,
     children: [
       {path: '', redirectTo: 'user-info', pathMatch: 'full'},
-      { path: 'signin',  component: WelcomeComponent},
+      { path: 'signin',  component: SigninComponent},
       { path: 'signup',  component: SignupComponent},
       { path: 'admin', component: HomeComponent},
       { path: 'user-info', component: UserInfoComponent},

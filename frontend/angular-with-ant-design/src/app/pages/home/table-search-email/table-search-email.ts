@@ -55,24 +55,34 @@ export class TableEmail {
     });
   }
 
-  applyFilter() {
-    if (!this.Users.length) {
-      console.warn('No users to filter');
-      return; 
-    }
+  // applyFilter() {
+  //   if (!this.Users.length) {
+  //     console.warn('No users to filter');
+  //     return; 
+  //   }
   
-    const emailFilter = this.filterEmail();
-    console.log('Applying filter:', emailFilter);
+  //   const emailFilter = this.filterEmail();
+  //   console.log('Applying filter:', emailFilter);
 
-    if (emailFilter.trim()) {
+  //   if (emailFilter.trim()) {
+  //     this.filteredUsers = this.Users.filter(user =>
+  //       user.email?.toLowerCase().includes(emailFilter.toLowerCase())
+  //     );
+  //   } else {
+  //     this.filteredUsers = [...this.Users]; 
+  //   }
+
+  //   console.log('Filtered users:', this.filteredUsers);
+  // }
+
+  applyFilter() {
+    if (this.filterEmail().trim()) {
       this.filteredUsers = this.Users.filter(user =>
-        user.email?.toLowerCase().includes(emailFilter.toLowerCase())
+        user.email?.toLowerCase() === this.filterEmail().toLowerCase()
       );
     } else {
-      this.filteredUsers = [...this.Users]; 
+      this.filteredUsers = [];
     }
-
-    console.log('Filtered users:', this.filteredUsers);
   }
 
   onRoleChange(user: User, event: any) {

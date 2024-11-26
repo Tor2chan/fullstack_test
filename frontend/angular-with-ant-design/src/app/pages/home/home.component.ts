@@ -103,7 +103,7 @@ import { UserService, User } from '../../services/user.service';
         <search-all></search-all>
       </div>
       
- 
+ <!-- {{email_value}} {{email_value}} -->
       <div *ngIf="showEmail">
         <app-table-email [filterEmail]="email_value"></app-table-email>
       </div>
@@ -137,9 +137,9 @@ export class HomeComponent {
 
   addUser(): void {
     if (this.newUser.name && this.newUser.email && this.newUser.username && this.newUser.password) {
-      // กำหนดค่า role ก่อนส่งไป
+      
       if (!this.newUser.role) {
-        this.newUser.role = "user";  // กำหนด role เป็น "USER" หากไม่ได้ระบุ
+        this.newUser.role = "user";  
       }
       this.userService.addUser(this.newUser as User).subscribe(
         (user) => {

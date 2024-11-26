@@ -66,10 +66,9 @@ export class TableAll implements OnInit {
     
         const newRole = event.value;
     
-        // อัพเดทค่าของ selectedRole ของ user ใน modal
         this.selectedUser = {
             ...user,
-            role: newRole.role, // อัพเดท role ที่เลือก
+            role: newRole.role, 
             selectedRole: newRole
         };
     
@@ -93,7 +92,6 @@ export class TableAll implements OnInit {
 
     saveUserChanges() {
         if (this.selectedUser && this.selectedUser.id) {
-            // ส่งค่า role จาก selectedRole
             const newRole = this.selectedUser.selectedRole.role;
             
             this.userService.updateUserRole(this.selectedUser.id, newRole).subscribe({

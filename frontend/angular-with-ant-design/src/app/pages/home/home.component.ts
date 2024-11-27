@@ -61,7 +61,7 @@ export class HomeComponent {
         !this.newUser.username || 
         !this.newUser.password) {
 
-      this.dialogMessage = "Complete account info";
+      this.dialogMessage = "Complete account info ?";
       this.showDialog();
       return;
     }
@@ -139,3 +139,4 @@ export class HomeComponent {
     this.username_value = username;
   }
 }
+

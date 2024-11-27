@@ -1,22 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common'; 
+import { MenuItem } from 'primeng/api';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
 
 @Component({
   selector: 'app-user-info',
   standalone: true,
   imports: [
-    CommonModule 
+    CommonModule,
+    BreadcrumbModule
   ],
   templateUrl: './user-info.component.html',
   styleUrl: './user-info.component.css'
 })
 export class UserInfoComponent implements OnInit {
   user: any = null;
+  items: MenuItem[] | undefined;
 
   constructor(private router: Router) {}
 
   ngOnInit() {
+    this.items = [
+      { label: 'info' }, 
+  ];
+
     if (typeof sessionStorage !== 'undefined') {
       const sessionUser = sessionStorage.getItem('sessionUser');
       if (sessionUser) {
@@ -27,5 +35,9 @@ export class UserInfoComponent implements OnInit {
         this.router.navigate(['signin']);
       }
     }
+  }
+
+  changePicture(){
+    this.router.navigate(['user-info/change-picture'])
   }
 }

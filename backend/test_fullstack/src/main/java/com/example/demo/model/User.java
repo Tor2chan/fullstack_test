@@ -13,11 +13,17 @@ public class User {
     private String email;
     private String role;
     private String password;
-
-    // Getters and Setters
+    private String profilePicture;    
 
     public User() {
         this.role = "user";  // กำหนดค่า default เป็น "USER"
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public Long getId() { return id; }

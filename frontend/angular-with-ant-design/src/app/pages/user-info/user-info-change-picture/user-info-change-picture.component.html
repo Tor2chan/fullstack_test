@@ -1,5 +1,63 @@
-<p-breadcrumb 
+<!-- <p-breadcrumb 
   class="max-w-full" 
   [model]="items" 
   [style]="{ 'background-color': 'transparent', 'box-shadow': 'none' }">
-</p-breadcrumb>
+</p-breadcrumb> -->
+
+<!-- --content-- -->
+<div class="container">
+    <div class="profile-picture-section">
+      <h2>Change Profile Picture</h2>
+      
+      <!-- Current Profile Picture -->
+      <div class="current-picture" *ngIf="currentProfilePicture">
+        <img [src]="currentProfilePicture" alt="Current Profile Picture">
+      </div>
+  
+      <!-- File Upload Input -->
+      <div class="file-upload">
+        <input 
+          type="file" 
+          #fileInput
+          (change)="onFileSelected($event)"
+          accept="image/jpeg,image/png,image/jpg"
+          style="display: none;"
+        >
+        <button (click)="fileInput.click()" class="upload-button">
+          Select Profile Picture
+        </button>
+      </div>
+  
+      <!-- Preview Selected Image -->
+      <div class="preview" *ngIf="selectedImagePreview">
+        <h3>Selected Image Preview:</h3>
+        <div class="flex justify-center" >
+            <img  [src]="selectedImagePreview" alt="Selected Profile Picture">
+        </div>
+      </div>
+  
+      <!-- Upload Button -->
+       <div ethod="POST" enctype="multipart/form-data">
+            <button 
+            (click)="uploadProfilePicture()" 
+            [disabled]="!selectedFile"
+            class="submit-button"
+            >
+            Upload Profile Picture
+        </button>
+       </div>
+
+    </div>
+  
+    <!-- Success/Error Dialog -->
+    <p-dialog 
+      [(visible)]="dialogVisible" 
+      [modal]="true" 
+      [header]="dialogHeader"
+    >
+      <p>{{ dialogMessage }}</p>
+      <ng-template pTemplate="footer">
+        <button (click)="dialogVisible = false">Close</button>
+      </ng-template>
+    </p-dialog>
+  </div>

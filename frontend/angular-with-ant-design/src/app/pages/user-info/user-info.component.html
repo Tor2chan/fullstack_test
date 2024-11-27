@@ -1,19 +1,35 @@
-<p-breadcrumb 
-  class="max-w-full" 
-  [model]="items" 
-  [style]="{ 'background-color': 'transparent', 'box-shadow': 'none' }">
-</p-breadcrumb>
+<div class="mb-14">
+  <p-breadcrumb 
+    class="max-w-full " 
+    [model]="items" 
+    [style]="{ 'background-color': 'transparent', 'box-shadow': 'none' }">
+  </p-breadcrumb>
+</div>
 
-<button type="button" (click)="changePicture()" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">
-  Change picture
-</button>
-
-<div *ngIf="user" class="mt-5">
-    <h1 class="flex justify-center m-2">Username: <strong>{{ user.username }}</strong></h1>
-    <p class="flex justify-center m-2">Role: <strong>{{ user.role }}</strong></p>
-    <p class="flex justify-center m-2">Email: <strong>{{ user.email }}</strong></p>
-    <p class="flex justify-center m-2">Name: <strong>{{ user.name }}</strong></p>
+<div class="p-0 mx-4 grid grid-cols-[1fr_4fr] gap-4">
+  <!-- col 1-->
+  <div class="border-r border-gray-300"> 
+    <div class="flex justify-center">
+      <button type="button" (click)="changePicture()" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">
+        Change picture
+      </button>
+    </div>
   </div>
+
+  <!-- col2 -->
+  <div>
+    <div *ngIf="user" class="mt-5 mr-8">
+      <h1 class="flex justify-center m-2">Username: <strong>{{ user.username }}</strong></h1>
+      <p class="flex justify-center m-2">Role: <strong>{{ user.role }}</strong></p>
+      <p class="flex justify-center m-2">Email: <strong>{{ user.email }}</strong></p>
+      <p class="flex justify-center m-2">Name: <strong>{{ user.name }}</strong></p>
+    </div>
+  </div>
+  
+</div>
+
+
+
   
   <!-- <ng-template #noUser>
     <h1>No user logged in</h1>

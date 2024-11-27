@@ -11,6 +11,7 @@ export interface User {
     role: string;
     password: string;
     selectedRole: { role: string }; 
+    profilePicture?: string; 
 }
 
 @Injectable({
@@ -47,4 +48,20 @@ export class UserService {
             })
         );
     }
+    uploadProfilePicture(userId: number, file: File): Observable<any> {
+        const formData = new FormData();
+        formData.append('file', file, file.name);
+    
+        return this.http.post(`${this.apiUrl}/${userId}/profile-picture`, formData);
+    }
+
+    getProfilePictureUrl(userId: number): Observable<string> {
+        return this.http.get<{profilePicture: string}>(`${this.apiUrl}/${userId}/profile-picture`)
+            .pipe(
+                map(response => response.profilePicture 
+                    ? `http://localhost:8080/asset/profile-pictures/${response.profilePicture}` 
+                    : '')
+            );
+    }
+    
 }

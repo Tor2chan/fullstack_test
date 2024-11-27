@@ -33,8 +33,8 @@ export class HomeComponent {
   username_value: string = '';
   showModal = false;
   visible: boolean = false;
+  dialogMessage: string = '';
 
-  // add_user
   ngOnInit(): void {
     this.userService.getUsers().subscribe((data) => (this.users = data));
 
@@ -55,17 +55,39 @@ export class HomeComponent {
   }
 
   addUser(): void {
-    // Check if any of the required fields are empty
-    if (!this.newUser.name || !this.newUser.email || !this.newUser.username || !this.newUser.password) {
-      // Show dialog if any field is empty
+    // check input
+    if (!this.newUser.name || 
+        !this.newUser.email || 
+        !this.newUser.username || 
+        !this.newUser.password) {
+
+      this.dialogMessage = "Complete account info";
       this.showDialog();
       return;
     }
   
+    // check username
+    const isDuplicateUsername = this.users.some(user => user.username === this.newUser.username);
+    if (isDuplicateUsername) {
+      this.dialogMessage = "Already have this username";
+      this.showDialog();
+      return;
+    }
+
+    // check email
+    const isDuplicateEmail = this.users.some(user => user.email === this.newUser.email);
+    if (isDuplicateEmail) {
+      this.dialogMessage = "Already have this email";
+      this.showDialog();
+      return;
+    }
+  
+    // Set default role 
     if (!this.newUser.role) {
       this.newUser.role = "user";
     }
   
+    // PUSH
     this.userService.addUser(this.newUser as User).subscribe({
       next: (user) => {
         this.users.push(user);

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule} from '@angular/forms';
 import { UserService, User } from '../../services/user.service';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-login  ',
@@ -10,7 +11,8 @@ import { UserService, User } from '../../services/user.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,  
-    FormsModule ],
+    FormsModule,
+    DialogModule ],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
@@ -19,6 +21,8 @@ export class SignupComponent {
   loginForm: FormGroup;
   submitted = false;  
   users: User[] = [];
+  visible: boolean = false;
+  dialogMessage: string = '';
 
   constructor(private fb: FormBuilder, private userService: UserService, private router: Router) {
     this.loginForm = this.fb.group({
@@ -55,6 +59,21 @@ addUser(): void {
       role: "user", 
     };
 
+    const isDuplicateUsername = this.users.some(user => user.username === formValue.username);
+    if (isDuplicateUsername) {
+      this.dialogMessage = "Already have this username";
+      this.showDialog();
+      return;
+    }
+
+    // check email
+    const isDuplicateEmail = this.users.some(user => user.email === formValue.email);
+    if (isDuplicateEmail) {
+      this.dialogMessage = "Already have this email";
+      this.showDialog();
+      return;
+    }
+
     this.userService.addUser(newUser as User).subscribe({
       next: (user) => {
         this.users.push(user);
@@ -67,6 +86,14 @@ addUser(): void {
     });
   }
 }
+
+  showDialog(){
+    this.visible = true;
+  }
+
+  closeDialog(){
+    this.visible = false;
+  }
 
 
 

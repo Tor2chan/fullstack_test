@@ -9,6 +9,7 @@ import { TableUsername } from './table-search-username/table-search-username';
 import { InputTextModule } from 'primeng/inputtext';
 import { UserService, User } from '../../services/user.service';
 import { DialogModule } from 'primeng/dialog';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -23,7 +24,7 @@ export class HomeComponent {
   users: User[] = [];
   newUser: Partial<User> = {};
 
-  constructor(private userService: UserService){}
+  constructor(private userService: UserService, private router: Router){}
 
   showAll = false;
   showEmail = false;
@@ -36,6 +37,21 @@ export class HomeComponent {
   // add_user
   ngOnInit(): void {
     this.userService.getUsers().subscribe((data) => (this.users = data));
+
+    if(typeof sessionStorage !== 'undefined'){
+      const sessionUser = sessionStorage.getItem('sessionUser');
+      if (sessionUser) {
+        const user = JSON.parse(sessionUser);
+        if (user.role == 'admin') {
+          console.log('access admin')
+        }
+        if (user.role == 'user'){
+          this.router.navigate(['user-info']);
+        }
+      } else {
+        this.router.navigate(['signin']); 
+      }
+    }
   }
 
   addUser(): void {

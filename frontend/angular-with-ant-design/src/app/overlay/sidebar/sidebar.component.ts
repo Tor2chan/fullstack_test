@@ -4,7 +4,6 @@ import { MenubarModule } from 'primeng/menubar';
 import { Router } from '@angular/router';  
 import { CommonModule } from '@angular/common'; 
 
-
 @Component({
   selector: 'app-sidebar',
   imports: [MenubarModule, CommonModule],
@@ -15,6 +14,7 @@ import { CommonModule } from '@angular/common';
 export class SidebarComponent implements OnInit {
   items: MenuItem[] | undefined;
   isLoggedIn: boolean = false;
+  isAdmin: boolean = false;
 
   constructor(private router: Router) {}
 
@@ -22,25 +22,30 @@ export class SidebarComponent implements OnInit {
     if (typeof window !== 'undefined' && window.sessionStorage) {
       const sessionUser = sessionStorage.getItem('sessionUser');
       if (sessionUser) {
+        const user = JSON.parse(sessionUser);
         this.isLoggedIn = true;
+        this.isAdmin = user.role === 'admin'; // ตรวจสอบ role ของผู้ใช้
       }
     }
 
+   
     this.items = [
-      {
-        label: 'Admin',
-        icon: 'pi pi-home',
-        command: () => { this.router.navigate(['admin']) }
-      },
       {
         label: 'Info',
         icon: 'pi pi-star',
         command: () => { this.router.navigate(['user-info']) }
       }
     ];
+
+    if (this.isAdmin) {
+      this.items.unshift({
+        label: 'Admin',
+        icon: 'pi pi-home',
+        command: () => { this.router.navigate(['admin']) }
+      });
+    }
   }
 
- 
   signup_redirect() {
     this.router.navigate(['signup']);
   }
@@ -52,6 +57,7 @@ export class SidebarComponent implements OnInit {
   logout() {
     sessionStorage.removeItem('sessionUser');  
     this.isLoggedIn = false;
-    this.router.navigate(['signin']);
+    this.isAdmin = false;
+    this.router.navigate(['signin']).then(() => window.location.reload());
   }
 }

@@ -19,8 +19,8 @@ public class config implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*");
     }
-    // public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    //     registry.addResourceHandler("/profile-pictures/**")
-    //             .addResourceLocations("file:" + uploadDir + "/");
-    // }
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/profile-pictures/**")
+                .addResourceLocations("file:" + uploadDir + "/");
+    }
 }

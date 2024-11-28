@@ -6,11 +6,11 @@
 
 <!-- --content-- -->
 <div class="container">
-    <div class="profile-picture-section">
+    <div class="profile-picture-section mt-6">
       <h2>Change Profile Picture</h2>
       
       <!-- Current Profile Picture -->
-      <div class="current-picture flex mt-12 justify-center" *ngIf="currentProfilePicture">
+      <div class="current-picture flex mt-6 justify-center" *ngIf="currentProfilePicture">
         <img [src]="currentProfilePicture" alt="Current Profile Picture">
       </div>     
   
@@ -23,14 +23,14 @@
           accept="image/jpeg,image/png,image/jpg"
           style="display: none;"
         >
-        <button (click)="fileInput.click()" class="upload-button">
+        <button (click)="fileInput.click()" class="upload-button ">
           Select Profile Picture
         </button>
       </div>
   
       <!-- Preview Selected Image -->
-      <div class="preview" *ngIf="selectedImagePreview">
-        <h3>Selected Image Preview:</h3>
+      <div class="preview mt-6" *ngIf="selectedImagePreview">
+        <h3 class="mb-4">Selected Image Preview:</h3>
         <div class="flex justify-center" >
             <img  [src]="selectedImagePreview" alt="Selected Profile Picture">
         </div>

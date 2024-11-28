@@ -47,9 +47,6 @@ export class UserInfoChangePictureComponent implements OnInit {
       }
     }
   }
-  
-
-
 
   loadCurrentProfilePicture(userId: number): void {
     this.userService.getProfilePictureUrl(userId).subscribe({
@@ -57,12 +54,12 @@ export class UserInfoChangePictureComponent implements OnInit {
         if (response.profilePicture) {
           this.currentProfilePicture = `http://localhost:8080/profile-pictures/${response.profilePicture}`;
         } else {
-          this.currentProfilePicture = 'http://localhost:8080/profile-pictures/default-profile.png';
+          this.currentProfilePicture = 'assets/default-profile.png'; 
         }
       },
       error: (err) => {
         console.error('Error loading profile picture', err);
-        this.currentProfilePicture = 'http://localhost:8080/profile-pictures/default-profile.png';
+        this.currentProfilePicture = 'assets/default-profile.png';
       }
     });
   }

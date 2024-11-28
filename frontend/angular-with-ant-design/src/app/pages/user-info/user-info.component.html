@@ -6,27 +6,48 @@
   </p-breadcrumb>
 </div>
 
-<div class="p-0 mx-4 grid grid-cols-[1fr_4fr] gap-4">
+<div class="p-0 mx-4 grid grid-cols-[1fr_8fr] gap-4">
   <!-- col 1-->
+
   <div class="border-r border-gray-300"> 
+
     <div class="flex justify-center">
-      <button type="button" (click)="changePicture()" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">
+      <button type="button" (click)="changePicture()" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">
         Change picture
       </button>
     </div>
+
   </div>
 
   <!-- col2 -->
   <div>
+
+    <div class="current-picture flex mr-8 justify-center" *ngIf="currentProfilePicture">
+      <img 
+        [src]="currentProfilePicture" 
+        alt="Current Profile Picture" 
+        class="max-w-[300px] max-h-[300px] rounded-full object-cover mb-5"
+      >
+    </div>   
+
     <div *ngIf="user" class="mt-5 mr-8">
-      <h1 class="flex justify-center m-2">Username: <strong>{{ user.username }}</strong></h1>
-      <p class="flex justify-center m-2">Role: <strong>{{ user.role }}</strong></p>
-      <p class="flex justify-center m-2">Email: <strong>{{ user.email }}</strong></p>
-      <p class="flex justify-center m-2">Name: <strong>{{ user.name }}</strong></p>
-      <p class="flex justify-center m-2">id: <strong>{{ user.id }}</strong></p>
+      <h1 class="flex justify-center text-4xl mb-8 font-bold">Role: {{ user.role }} </h1>
+
+      <div class="p-0 mx-4 grid grid-cols-[1fr_1fr] gap-4">
+        <div>
+          <!-- col1 -->
+          <div class="mb-4"><h1 class="flex justify-end text-2xl font-bold m-2">Username: </h1></div>
+          <div class="mb-4"><h1 class="flex justify-end text-2xl font-bold m-2">email: </h1></div>
+          <div class="mb-4"><h1 class="flex justify-end text-2xl font-bold m-2">name: </h1></div>
+        </div>
+
+        <div>
+          <!-- col2 -->
+          <div class="mb-4"><h1 class="flex justify-start text-2xl font-bold m-2">{{user.username}}</h1> </div>
+          <div class="mb-4"><h1 class="flex justify-start text-2xl font-bold m-2">{{user.email}}</h1> </div>
+          <div class="mb-4"><h1 class="flex justify-start text-2xl font-bold m-2">{{user.name}}</h1> </div>
+      </div>
     </div>
-  </div>
-  
 </div>
 
 

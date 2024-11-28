@@ -1,63 +1,80 @@
-<!-- <p-breadcrumb 
+<p-breadcrumb 
   class="max-w-full" 
   [model]="items" 
   [style]="{ 'background-color': 'transparent', 'box-shadow': 'none' }">
-</p-breadcrumb> -->
+</p-breadcrumb>
 
 <!-- --content-- -->
-<div class="container">
-    <div class="profile-picture-section mt-6">
-      <h2>Change Profile Picture</h2>
-      
-      <!-- Current Profile Picture -->
-      <div class="current-picture flex mt-6 justify-center" *ngIf="currentProfilePicture">
-        <img [src]="currentProfilePicture" alt="Current Profile Picture">
-      </div>     
-  
-      <!-- File Upload Input -->
-      <div class="file-upload">
-        <input 
-          type="file" 
-          #fileInput
-          (change)="onFileSelected($event)"
-          accept="image/jpeg,image/png,image/jpg"
-          style="display: none;"
-        >
-        <button (click)="fileInput.click()" class="upload-button ">
-          Select Profile Picture
-        </button>
-      </div>
-  
-      <!-- Preview Selected Image -->
-      <div class="preview mt-6" *ngIf="selectedImagePreview">
-        <h3 class="mb-4">Selected Image Preview:</h3>
-        <div class="flex justify-center" >
-            <img  [src]="selectedImagePreview" alt="Selected Profile Picture">
-        </div>
-      </div>
-  
-      <!-- Upload Button -->
-       <div ethod="POST" enctype="multipart/form-data">
-            <button 
-            (click)="uploadProfilePicture()" 
-            [disabled]="!selectedFile"
-            class="submit-button"
-            >
-            Upload Profile Picture
-        </button>
-       </div>
+<div class="max-w-[500px] mx-auto px-5 py-5 text-center">
+  <div class="profile-picture-section mt-6">
+    <h2 class="text-xl font-bold">Profile Picture</h2>
+    
+    <!-- Current Profile Picture -->
+    <div class="current-picture flex mt-6 justify-center" *ngIf="currentProfilePicture">
+      <img 
+        [src]="currentProfilePicture" 
+        alt="Current Profile Picture" 
+        class="max-w-[300px] max-h-[300px] rounded-full object-cover mb-5"
+      >
+    </div>     
 
+    <!-- File Upload Input -->
+    <div class="file-upload">
+      <input 
+        type="file" 
+        #fileInput
+        (change)="onFileSelected($event)"
+        accept="image/jpeg,image/png,image/jpg"
+        class="hidden"
+      >
+      <button 
+        (click)="fileInput.click()" 
+        class="m-2.5 px-5 py-2.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+      >
+        Select Profile Picture
+      </button>
     </div>
-  
-    <!-- Success/Error Dialog -->
-    <p-dialog 
-      [(visible)]="dialogVisible" 
-      [modal]="true" 
-      [header]="dialogHeader"
-    >
-      <p>{{ dialogMessage }}</p>
-      <ng-template pTemplate="footer">
-        <button (click)="dialogVisible = false">Close</button>
-      </ng-template>
-    </p-dialog>
+
+    <!-- Preview Selected Image -->
+    <div class="preview mt-6" *ngIf="selectedImagePreview">
+      <h3 class="mb-4 text-xl font-bold">Image Preview</h3>
+      <div class="flex justify-center">
+        <img  
+          [src]="selectedImagePreview" 
+          alt="Selected Profile Picture" 
+          class="max-w-[300px] max-h-[300px] mb-3"
+        >
+      </div>
+    </div>
+
+    <!-- Upload Button -->
+    <div>
+      <button 
+        (click)="uploadProfilePicture()" 
+        [disabled]="!selectedFile"
+        class="m-2.5 px-5 py-2.5 bg-blue-500 text-white rounded-md 
+               disabled:bg-gray-300 disabled:cursor-not-allowed 
+               hover:bg-blue-600 transition-colors"
+      >
+        Upload Profile Picture
+      </button>
+    </div>
   </div>
+
+  <!-- Success/Error Dialog -->
+  <p-dialog 
+    [(visible)]="dialogVisible" 
+    [modal]="true" 
+    [header]="dialogHeader"
+  >
+    <p>{{ dialogMessage }}</p>
+    <ng-template pTemplate="footer">
+      <button 
+        (click)="dialogVisible = false"
+        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+      >
+        Close
+      </button>
+    </ng-template>
+  </p-dialog>
+</div>

@@ -4,8 +4,8 @@ import { UserService } from '../../../services/user.service';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
-  /// <reference lib="dom" />
+import { MenuItem } from 'primeng/api';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
 
 @Component({
   selector: 'app-user-info-change-picture',
@@ -13,7 +13,8 @@ import { Router } from '@angular/router';
   imports: [
     CommonModule,
     DialogModule,
-    FormsModule
+    FormsModule,
+    BreadcrumbModule
   ],
   templateUrl: './user-info-change-picture.component.html',
   styleUrl: './user-info-change-picture.component.css'
@@ -21,6 +22,7 @@ import { Router } from '@angular/router';
 export class UserInfoChangePictureComponent implements OnInit {
 
   user: any = null;
+  items: MenuItem[] | undefined;
 
   selectedFile: File | null = null;
   selectedImagePreview: string | ArrayBuffer | null = null;
@@ -34,6 +36,11 @@ export class UserInfoChangePictureComponent implements OnInit {
   constructor(private userService: UserService, private router: Router) {}
 
   ngOnInit(): void {
+    this.items = [
+      { label: 'info', routerLink: 'info'}, 
+      { label: 'change-picture'}
+  ];
+
     if (typeof sessionStorage !== 'undefined') {
       const sessionUser = sessionStorage.getItem('sessionUser');
       if (sessionUser) {

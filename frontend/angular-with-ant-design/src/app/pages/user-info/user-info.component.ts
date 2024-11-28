@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common'; 
 import { MenuItem } from 'primeng/api';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-user-info',
@@ -17,8 +18,10 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 export class UserInfoComponent implements OnInit {
   user: any = null;
   items: MenuItem[] | undefined;
+  currentProfilePicture: string | null = null;
 
-  constructor(private router: Router) {}
+
+  constructor(private router: Router, private userService: UserService) {}
 
   ngOnInit() {
     this.items = [
@@ -30,11 +33,29 @@ export class UserInfoComponent implements OnInit {
       if (sessionUser) {
         this.user = JSON.parse(sessionUser);
         console.log('User is logged in:', this.user);
+        this.loadCurrentProfilePicture(this.user.id);
+
       } else {
         console.log('No user logged in. Redirecting to signin page.');
         this.router.navigate(['signin']);
       }
     }
+  }
+
+  loadCurrentProfilePicture(userId: number): void {
+    this.userService.getProfilePictureUrl(userId).subscribe({
+      next: (response) => {
+        if (response.profilePicture) {
+          this.currentProfilePicture = `http://localhost:8080/profile-pictures/${response.profilePicture}`;
+        } else {
+          this.currentProfilePicture = 'assets/default-profile.png'; 
+        }
+      },
+      error: (err) => {
+        console.error('Error loading profile picture', err);
+        this.currentProfilePicture = 'assets/default-profile.png';
+      }
+    });
   }
 
   changePicture(){

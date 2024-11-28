@@ -39,20 +39,19 @@ export class UserInfoChangePictureComponent implements OnInit {
       if (sessionUser) {
         this.user = JSON.parse(sessionUser);
         console.log('User is logged in:', this.user);
+  
+        this.loadCurrentProfilePicture(this.user.id);
       } else {
         console.log('No user logged in. Redirecting to signin page.');
         this.router.navigate(['signin']);
       }
     }
-    const currentUserId = this.getCurrentUserId();
-    this.loadCurrentProfilePicture(currentUserId);
   }
+  
 
-  getCurrentUserId(): number {
-    return this.user.id; 
-  }
 
-  loadCurrentProfilePicture(userId: number): void {
+
+  loadCurrentProfilePicture(userId: any): void {
     this.userService.getProfilePictureUrl(userId).subscribe({
       next: (response) => {
         this.currentProfilePicture = response.profilePicture || 'http://localhost:8080/profile-pictures/default-profile.png';
@@ -78,7 +77,6 @@ export class UserInfoChangePictureComponent implements OnInit {
       return;
     }
   
-    const currentUserId = this.getCurrentUserId();
   
     // สร้าง FormData และเพิ่มไฟล์เข้าไป
     const formData = new FormData();
@@ -90,7 +88,7 @@ export class UserInfoChangePictureComponent implements OnInit {
     }
   
     // ส่งข้อมูลไปยัง backend
-    this.userService.uploadProfilePicture(currentUserId, formData).subscribe(
+    this.userService.uploadProfilePicture(this.user.id, formData).subscribe(
       response => {
         console.log('Upload success:', response);
       },

@@ -16,7 +16,7 @@ public class User {
     private String profilePicture;    
 
     public User() {
-        this.role = "user";  // กำหนดค่า default เป็น "USER"
+        this.role = "user";  
     }
 
     public String getProfilePicture() {

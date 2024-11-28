@@ -15,21 +15,18 @@ public class FileStorageService {
 
     @Value("${file.upload-dir}")
     private String uploadDir;
-
     public String storeFile(MultipartFile file, Long userId) throws IOException {
-        // ตรวจสอบไฟล์ว่างเปล่า
         if (file.isEmpty()) {
             throw new IOException("Cannot upload empty file");
         }
     
         // ตรวจสอบประเภทไฟล์
         String contentType = file.getContentType();
-        if (contentType == null || 
-            !contentType.startsWith("image/")) {
+        if (contentType == null || !contentType.startsWith("image/")) {
             throw new IOException("Only image files are allowed");
         }
     
-        // ตรวจสอบขนาดไฟล์ (5MB)
+        // ตรวจสอบขนาดไฟล์
         long maxSize = 5 * 1024 * 1024; // 5MB
         if (file.getSize() > maxSize) {
             throw new IOException("File size exceeds 5MB");
@@ -37,18 +34,18 @@ public class FileStorageService {
     
         // สร้าง directory หากยังไม่มี
         Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
-        Files.createDirectories(uploadPath);  // สร้างโฟลเดอร์หากไม่มี
-
-        // Generate filename
-        String fileName = userId + "_" + System.currentTimeMillis() + "_" + 
-                          file.getOriginalFilename().replaceAll("\\s+", "_");
+        Files.createDirectories(uploadPath);
     
-        // Copy file to target location
+        // สร้างชื่อไฟล์ใหม่
+        String fileName = userId + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename().replaceAll("\\s+", "_");
+    
+        // คัดลอกไฟล์ไปยังตำแหน่งที่ตั้ง
         Path targetLocation = uploadPath.resolve(fileName);
         Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
     
         return fileName;
     }
+    
 
     public void deleteFile(String fileName) throws IOException {
         Path filePath = Paths.get(uploadDir).resolve(fileName);

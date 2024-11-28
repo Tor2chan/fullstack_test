@@ -41,3 +41,4 @@ export class UserInfoComponent implements OnInit {
     this.router.navigate(['user-info/change-picture'])
   }
 }
+

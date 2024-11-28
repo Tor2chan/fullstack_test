@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { UserService } from '../../../services/user.service';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
+  /// <reference lib="dom" />
 
 @Component({
   selector: 'app-user-info-change-picture',
@@ -16,6 +19,9 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './user-info-change-picture.component.css'
 })
 export class UserInfoChangePictureComponent implements OnInit {
+
+  user: any = null;
+
   selectedFile: File | null = null;
   selectedImagePreview: string | ArrayBuffer | null = null;
   currentProfilePicture: string | null = null;
@@ -25,58 +31,44 @@ export class UserInfoChangePictureComponent implements OnInit {
   dialogHeader = '';
   dialogMessage = '';
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   ngOnInit(): void {
-    // Assuming you have a method to get current user's ID
+    if (typeof sessionStorage !== 'undefined') {
+      const sessionUser = sessionStorage.getItem('sessionUser');
+      if (sessionUser) {
+        this.user = JSON.parse(sessionUser);
+        console.log('User is logged in:', this.user);
+      } else {
+        console.log('No user logged in. Redirecting to signin page.');
+        this.router.navigate(['signin']);
+      }
+    }
     const currentUserId = this.getCurrentUserId();
     this.loadCurrentProfilePicture(currentUserId);
   }
 
-  // Mock method - replace with actual user ID retrieval logic
   getCurrentUserId(): number {
-    // This should be replaced with actual authentication/user service method
-    return 1; // Example user ID
+    return this.user.id; 
   }
 
   loadCurrentProfilePicture(userId: number): void {
     this.userService.getProfilePictureUrl(userId).subscribe({
-      next: (pictureUrl) => {
-        this.currentProfilePicture = pictureUrl || 'assets/default-profile.png';
+      next: (response) => {
+        this.currentProfilePicture = response.profilePicture || 'http://localhost:8080/profile-pictures/default-profile.png';
       },
       error: (err) => {
         console.error('Error loading profile picture', err);
-        this.currentProfilePicture = 'assets/default-profile.png';
+        this.currentProfilePicture = 'http://localhost:8080/profile-pictures/default-profile.png';
       }
     });
   }
 
   onFileSelected(event: any): void {
-    const file: File = event.target.files[0];
-    
+    const file = event.target.files[0];
     if (file) {
-      // Validate file type and size
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-      const maxSize = 5 * 1024 * 1024; // 5MB
-
-      if (!allowedTypes.includes(file.type)) {
-        this.showDialog('Error', 'Invalid file type. Please upload JPEG or PNG.');
-        return;
-      }
-
-      if (file.size > maxSize) {
-        this.showDialog('Error', 'File is too large. Maximum size is 5MB.');
-        return;
-      }
-
       this.selectedFile = file;
-
-      // Create image preview
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.selectedImagePreview = e.target.result;
-      };
-      reader.readAsDataURL(file);
+      this.selectedImagePreview = URL.createObjectURL(file);  
     }
   }
 
@@ -88,24 +80,33 @@ export class UserInfoChangePictureComponent implements OnInit {
   
     const currentUserId = this.getCurrentUserId();
   
-    this.userService.uploadProfilePicture(currentUserId, this.selectedFile).subscribe({
-      next: (response) => {
-        this.showDialog('Success', 'Profile picture uploaded successfully');
-        this.loadCurrentProfilePicture(currentUserId);
-        this.selectedFile = null;
-        this.selectedImagePreview = null;
+    // สร้าง FormData และเพิ่มไฟล์เข้าไป
+    const formData = new FormData();
+    formData.append('file', this.selectedFile, this.selectedFile.name);
+  
+    // ตรวจสอบค่าของ FormData ก่อนที่จะส่ง
+    for (let pair of formData.entries()) {  // `entries()` จะทำงานได้หาก `lib` ถูกตั้งค่าเป็น "dom"
+      console.log(pair[0] + ', ' + pair[1]);
+    }
+  
+    // ส่งข้อมูลไปยัง backend
+    this.userService.uploadProfilePicture(currentUserId, formData).subscribe(
+      response => {
+        console.log('Upload success:', response);
       },
-      error: (err) => {
-        console.error('Full Error Object:', err);
-        console.error('Error Status:', err.status);
-        console.error('Error Message:', err.message);
-        console.error('Error Body:', err.error);
-        
-        this.showDialog('Error', `Failed to upload profile picture: ${err.message}`);
+      error => {
+        console.error('Upload error:', error);
+        if (error.error && error.error.message) {
+          alert('Backend error: ' + error.error.message);
+        } else {
+          alert('An unknown error occurred.');
+        }
       }
-    });
+    );
   }
-
+  
+  
+  
   showDialog(header: string, message: string): void {
     this.dialogHeader = header;
     this.dialogMessage = message;

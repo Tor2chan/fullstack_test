@@ -15,7 +15,7 @@ public class config implements WebMvcConfigurer {
                 .allowedHeaders("*");
     }
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:uploads/");
+        registry.addResourceHandler("/profile-pictures/**")
+                .addResourceLocations("classpath:/static/profile-pictures/");
     }
 }

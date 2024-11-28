@@ -66,7 +66,8 @@ export class SigninComponent {
               email: user.email,
               username: user.username, 
               name: user.name,
-              role: user.role 
+              role: user.role,
+              id: user.id
             }));
   
             // route and refresh

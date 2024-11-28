@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+
 export interface User {
     id: number;
     username: string;
@@ -20,7 +21,7 @@ export interface User {
 export class UserService {
     private apiUrl = 'http://localhost:8080/api/users';
     private baseUrl = 'http://localhost:8080';
-
+    private profilePicturesUrl = 'http://localhost:8080/profile-pictures';
 
     constructor(private http: HttpClient) {}
 
@@ -58,7 +59,7 @@ export class UserService {
       
     
       getProfilePictureUrl(userId: number): Observable<any> {
-        return this.http.get(`${this.apiUrl}/${userId}/profile-picture`);
+        return this.http.get(`${this.baseUrl}/api/users/${userId}/profile-picture`);
       }
     
 }

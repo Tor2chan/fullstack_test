@@ -51,10 +51,14 @@ export class UserInfoChangePictureComponent implements OnInit {
 
 
 
-  loadCurrentProfilePicture(userId: any): void {
+  loadCurrentProfilePicture(userId: number): void {
     this.userService.getProfilePictureUrl(userId).subscribe({
       next: (response) => {
-        this.currentProfilePicture = response.profilePicture || 'http://localhost:8080/profile-pictures/default-profile.png';
+        if (response.profilePicture) {
+          this.currentProfilePicture = `http://localhost:8080/profile-pictures/${response.profilePicture}`;
+        } else {
+          this.currentProfilePicture = 'http://localhost:8080/profile-pictures/default-profile.png';
+        }
       },
       error: (err) => {
         console.error('Error loading profile picture', err);
@@ -62,6 +66,7 @@ export class UserInfoChangePictureComponent implements OnInit {
       }
     });
   }
+  
 
   onFileSelected(event: any): void {
     const file = event.target.files[0];
@@ -91,6 +96,7 @@ export class UserInfoChangePictureComponent implements OnInit {
     this.userService.uploadProfilePicture(this.user.id, formData).subscribe(
       response => {
         console.log('Upload success:', response);
+        this.reload();
       },
       error => {
         console.error('Upload error:', error);
@@ -103,7 +109,9 @@ export class UserInfoChangePictureComponent implements OnInit {
     );
   }
   
-  
+  reload(){
+    window.location.reload();
+  }  
   
   showDialog(header: string, message: string): void {
     this.dialogHeader = header;

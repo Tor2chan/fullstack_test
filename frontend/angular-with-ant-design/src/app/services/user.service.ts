@@ -52,11 +52,9 @@ export class UserService {
         );
     }
 
-
     uploadProfilePicture(userId: number, formData: FormData): Observable<any> {
         return this.http.post(`${this.baseUrl}/api/users/${userId}/profile-picture`, formData);
       }
-      
     
       getProfilePictureUrl(userId: number): Observable<any> {
         return this.http.get(`${this.baseUrl}/api/users/${userId}/profile-picture`);

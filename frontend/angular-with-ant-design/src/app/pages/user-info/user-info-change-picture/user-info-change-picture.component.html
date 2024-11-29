@@ -5,8 +5,9 @@
 </p-breadcrumb>
 
 <!-- --content-- -->
-<div class="max-w-[500px] mx-auto px-5 py-5 text-center">
+<div class="max-w-[500px] mx-auto px-5 py-5 text-center" >
   <div class="profile-picture-section mt-6">
+  <div *ngIf="!selectedImagePreview">
     <h2 class="text-xl font-bold">Profile Picture</h2>
     
     <!-- Current Profile Picture -->
@@ -34,10 +35,12 @@
         Select Profile Picture
       </button>
     </div>
+  </div>
 
     <!-- Preview Selected Image -->
-    <div class="preview mt-6" *ngIf="selectedImagePreview">
-      <h3 class="mb-4 text-xl font-bold">Image Preview</h3>
+  <div *ngIf="selectedImagePreview">
+    <div class="preview mt-6" >
+      <h3 class="mb-6 text-xl font-bold">Profile Preview</h3>
       <div class="flex justify-center">
         <img  
           [src]="selectedImagePreview" 
@@ -48,17 +51,24 @@
     </div>
 
     <!-- Upload Button -->
-    <div>
+    <div class="mt-4">
+      <button 
+        (click)="reload()" 
+        [disabled]="!selectedFile"
+        class="m-2.5 px-3 py-2.5 bg-blue-500 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed 
+              hover:bg-blue-600 transition-colors">
+        Cancel
+      </button>
+
       <button 
         (click)="uploadProfilePicture()" 
         [disabled]="!selectedFile"
-        class="m-2.5 px-5 py-2.5 bg-blue-500 text-white rounded-md 
-               disabled:bg-gray-300 disabled:cursor-not-allowed 
-               hover:bg-blue-600 transition-colors"
-      >
-        Upload Profile Picture
+        class="m-2.5 px-3 py-2.5 bg-blue-500 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed 
+               hover:bg-blue-600 transition-colors">
+        Confirm
       </button>
     </div>
+  </div>
   </div>
 
   <!-- Success/Error Dialog -->

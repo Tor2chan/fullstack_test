@@ -61,5 +61,8 @@ export class UserInfoComponent implements OnInit {
   changePicture(){
     this.router.navigate(['user-info/change-picture'])
   }
+  changeName(){
+    this.router.navigate(['user-info/change-name'])
+  }
 }
 

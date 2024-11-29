@@ -1,0 +1,36 @@
+<div class="mb-14">
+    <p-breadcrumb 
+      class="max-w-full " 
+      [model]="items" 
+      [style]="{ 'background-color': 'transparent', 'box-shadow': 'none' }">
+    </p-breadcrumb>
+  </div>
+
+  <div *ngIf="user" class="p-0 mx-4 grid grid-cols-[1fr_1fr] gap-4">
+    <div>
+      <!-- col1 -->
+      <div class="mb-4"><h1 class="flex justify-end text-2xl font-bold m-2">Name: </h1></div>
+      <div class="mb-4"><h1 class="flex justify-end text-2xl font-bold m-2">Change name: </h1></div>
+    </div>
+
+    <div>
+        <!-- col2 -->
+        <div class="mb-4"><h1 class="flex justify-start text-xl font-bold m-2">{{user.name}}</h1> </div>
+        <div class="mt-5">
+            <input type="text" class="px-1 text-xl" [(ngModel)]="value" /> 
+        </div>
+        <div class="mt-4">
+            <button 
+              class="m-2.5 px-3 py-2.5 bg-blue-500 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed 
+                    hover:bg-blue-600 transition-colors">
+              Cancel
+            </button>
+      
+            <button 
+              class="m-2.5 px-3 py-2.5 bg-blue-500 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed 
+                     hover:bg-blue-600 transition-colors">
+              Confirm
+            </button>
+          </div>
+    </div>
+</div>

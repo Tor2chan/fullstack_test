@@ -63,7 +63,7 @@ export class UserInfoChangeNameComponent implements OnInit {
 
     // Ensure we have a user and a valid user ID
     if (this.user && this.user.id !== undefined) {  // Ensure that id is defined
-      this.userService.updateUserName(this.user.id, this.newName).subscribe({
+      this.userService.updateName(this.user.id, this.newName).subscribe({
         next: (updatedUser) => {
           // Update the user in session storage
           if (typeof sessionStorage !== 'undefined') {

@@ -59,9 +59,5 @@ export class UserService {
     getProfilePictureUrl(userId: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/api/users/${userId}/profile-picture`);
     }
-
-    updateUserName(userId: number, name: string): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/${userId}/name`, { name });
-}
     
 }

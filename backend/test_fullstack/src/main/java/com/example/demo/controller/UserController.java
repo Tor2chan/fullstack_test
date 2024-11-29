@@ -70,7 +70,7 @@ public class UserController {
 
     // เพิ่ม API สำหรับการอัพเดตชื่อของผู้ใช้
     @PutMapping("/{userId}/name")
-    public ResponseEntity<?> updateUserName(@PathVariable Long userId, @RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<?> updateName(@PathVariable Long userId, @RequestBody Map<String, String> requestBody) {
         try {
             String name = requestBody.get("name");
 
@@ -90,6 +90,42 @@ public class UserController {
             return ResponseEntity.internalServerError().body("Error updating user name: " + e.getMessage());
         }
     }
+
+    @PutMapping("/{userId}/password")
+    public ResponseEntity<?> changePassword(
+        @PathVariable Long userId,
+        @RequestBody Map<String, String> requestBody) {
+        try {
+            String currentPassword = requestBody.get("currentPassword");
+            String newPassword = requestBody.get("newPassword");
+    
+            if (currentPassword == null || currentPassword.isEmpty() ||
+                newPassword == null || newPassword.isEmpty()) {
+                return ResponseEntity.badRequest().body("Both current and new passwords are required.");
+            }
+    
+            User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+    
+            // Validate current password
+            if (!user.getPassword().equals(currentPassword)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Current password is incorrect.");
+            }
+    
+            // Update password
+            user.setPassword(newPassword);
+            userRepository.save(user);
+    
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Password updated successfully.");
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating password: " + e.getMessage());
+        }
+    }
+    
 
     // picture
     @PostMapping("/{userId}/profile-picture")

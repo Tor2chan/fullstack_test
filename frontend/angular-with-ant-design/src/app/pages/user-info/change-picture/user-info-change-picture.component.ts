@@ -100,7 +100,7 @@ export class UserInfoChangePictureComponent implements OnInit {
     this.userService.uploadProfilePicture(this.user.id, formData).subscribe(
       response => {
         console.log('Upload success:', response);
-        this.reload();
+        this.router.navigate(['user-info']);
       },
       error => {
         console.error('Upload error:', error);

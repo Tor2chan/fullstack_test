@@ -9,10 +9,6 @@
     <div class="login-container">
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <div class="title-center"><h2>Sign in</h2></div>
-
-            <div *ngIf="loginError" class="error-message">
-                Username or password is incorrect
-            </div>
           
           <div class="form-group">
             <label for="username">Username:</label>
@@ -39,6 +35,11 @@
             <div *ngIf="submitted && loginForm.get('password')?.invalid" class="error-message">
               Enter your password
             </div>
+            
+            <div *ngIf="loginError" class="error-message">
+              Username or password is incorrect
+            </div>
+
           </div>
   
           <button type="submit">Sign in</button>

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,6 +68,28 @@ public class UserController {
         }
     }
 
+    // เพิ่ม API สำหรับการอัพเดตชื่อของผู้ใช้
+    @PutMapping("/{userId}/name")
+    public ResponseEntity<?> updateUserName(@PathVariable Long userId, @RequestBody Map<String, String> requestBody) {
+        try {
+            String name = requestBody.get("name");
+
+            if (name == null || name.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Name cannot be empty");
+            }
+
+            User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+            user.setName(name);
+            User updatedUser = userRepository.save(user);
+
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error updating user name: " + e.getMessage());
+        }
+    }
 
     // picture
     @PostMapping("/{userId}/profile-picture")
@@ -80,16 +101,16 @@ public class UserController {
                 return ResponseEntity.badRequest().body("File is empty");
             }
     
-            // ตรวจสอบประเภทไฟล์
+            // check type
             String contentType = file.getContentType();
             if (contentType == null || !contentType.startsWith("image/")) {
                 return ResponseEntity.badRequest().body("Only image files are allowed");
             }
     
-            // เก็บไฟล์ใน storage
+            // storage
             String fileName = fileStorageService.storeFile(file, userId);
     
-            // อัพเดทข้อมูลโปรไฟล์ของ user
+            // update user
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new RuntimeException("User not found"));
             
@@ -103,12 +124,10 @@ public class UserController {
             return ResponseEntity.ok(response);
     
         } catch (Exception e) {
-            // log error ในกรณีที่เกิดข้อผิดพลาด
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading profile picture: " + e.getMessage());
         }
     }
-    
 
     @GetMapping("/{userId}/profile-picture")
     public ResponseEntity<?> getProfilePictureUrl(@PathVariable Long userId) {

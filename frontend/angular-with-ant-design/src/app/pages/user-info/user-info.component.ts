@@ -3,8 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common'; 
 import { MenuItem } from 'primeng/api';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { UserService } from '../../services/user.service';
-
+import { UserService, User } from '../../services/user-services/user.service';
 @Component({
   selector: 'app-user-info',
   standalone: true,
@@ -63,6 +62,10 @@ export class UserInfoComponent implements OnInit {
   }
   changeName(){
     this.router.navigate(['user-info/change-name'])
+  }
+
+  changePassword(){
+    this.router.navigate(['user-info/change-password'])
   }
 }
 

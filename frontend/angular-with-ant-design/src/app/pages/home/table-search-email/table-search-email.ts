@@ -3,7 +3,7 @@ import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';  
-import { UserService, User } from '../../../services/user.service';
+import { UserService, User } from '../../../services/user-services/user.service';
 
 interface Role {
   role: string;

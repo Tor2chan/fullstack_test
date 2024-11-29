@@ -7,10 +7,9 @@ import { TableAll } from './table-search-all/table-search-all.component';
 import { TableEmail } from './table-search-email/table-search-email';
 import { TableUsername } from './table-search-username/table-search-username';
 import { InputTextModule } from 'primeng/inputtext';
-import { UserService, User } from '../../services/user.service';
 import { DialogModule } from 'primeng/dialog';
 import { Router } from '@angular/router';
-
+import { UserService, User } from '../../services/user-services/user.service';
 
 @Component({
   selector: 'app-home',

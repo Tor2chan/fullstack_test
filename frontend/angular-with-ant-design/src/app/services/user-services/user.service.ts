@@ -14,7 +14,7 @@ export interface User {
     selectedRole: { role: string }; 
     profilePicture?: string; 
 }
-
+    
 @Injectable({
     providedIn: 'root'
 })
@@ -55,9 +55,13 @@ export class UserService {
     uploadProfilePicture(userId: number, formData: FormData): Observable<any> {
         return this.http.post(`${this.baseUrl}/api/users/${userId}/profile-picture`, formData);
       }
-    
-      getProfilePictureUrl(userId: number): Observable<any> {
-        return this.http.get(`${this.baseUrl}/api/users/${userId}/profile-picture`);
-      }
+
+    getProfilePictureUrl(userId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/api/users/${userId}/profile-picture`);
+    }
+
+    updateUserName(userId: number, name: string): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/${userId}/name`, { name });
+}
     
 }

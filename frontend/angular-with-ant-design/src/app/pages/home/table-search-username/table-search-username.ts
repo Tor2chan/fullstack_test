@@ -1,9 +1,9 @@
 import { Component, input, effect} from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
-import { UserService, User } from '../../../services/user.service';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';  
+import { UserService, User } from '../../../services/user-services/user.service';
 
 interface Role {
   role: string;

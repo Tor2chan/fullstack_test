@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';  
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule} from '@angular/forms';
-import { UserService, User } from '../../services/user.service';
 import { DialogModule } from 'primeng/dialog';
+import { UserService, User } from '../../services/user-services/user.service';
 
 @Component({
   selector: 'app-login  ',

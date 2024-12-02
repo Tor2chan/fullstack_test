@@ -5,6 +5,8 @@ services:
     build:
       context: ./backend/test_fullstack
       dockerfile: Dockerfile
+    volumes:
+      - ./uploads:/app/backend/db-upload/profile-pictures 
     ports:
       - "8080:8080"
     depends_on:
@@ -25,5 +27,15 @@ services:
     ports:
       - "5432:5432"
 
+  # file-upload:
+  #   build: 
+  #     context: ./backend/db-upload
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./uploads:/app/uploads
+  #   depends_on:
+  #     - backend
+  #     - database
+      
 volumes:
   postgres_data:

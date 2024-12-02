@@ -1,7 +1,8 @@
 version: '3.8'
+
 services:
   backend:
-    build: 
+    build:
       context: ./backend/test_fullstack
       dockerfile: Dockerfile
     ports:
@@ -12,19 +13,6 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/first_database
       - SPRING_DATASOURCE_USERNAME=sutthipongk
       - SPRING_DATASOURCE_PASSWORD=29407
-    networks:
-      - backend_frontend_network
-
-  frontend:
-    build: 
-      context: ./frontend/angular-with-ant-design
-      dockerfile: Dockerfile
-    ports:
-      - "4200:80"  
-    depends_on:
-      - backend
-    networks:
-      - backend_frontend_network
 
   database:
     image: postgres:13
@@ -36,24 +24,6 @@ services:
       - POSTGRES_PASSWORD=29407
     ports:
       - "5432:5432"
-    networks:
-      - backend_frontend_network
-
-  file-upload:
-    build: 
-      context: ./backend/db-upload
-      dockerfile: Dockerfile
-    volumes:
-      - ./uploads:/app/uploads
-    depends_on:
-      - backend
-      - database
-    networks:
-      - backend_frontend_network
-
-networks:
-  backend_frontend_network:
-    driver: bridge
 
 volumes:
   postgres_data:

@@ -1,5 +1,5 @@
 export const environment = {
     production: true,
-    apiUrl: 'http://localhost:8080/api',  // URL ของ Backend
+    apiUrl: 'http://localhost:8080',  // URL ของ Backend
   };
   

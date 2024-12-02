@@ -1,18 +1,13 @@
-FROM node:18
-
+# Frontend Dockerfile
+FROM node:18 AS build
 WORKDIR /app
-
+COPY package*.json ./
+RUN npm install
 COPY . .
- 
-RUN apt-get update && apt-get install -y git
- 
-RUN npm install -g @angular/cli@16
+RUN npm run build --configuration=production
 
- 
-RUN npm install --verbose
- 
-RUN node --version && \
-    npm --version && \
-    ng version
- 
-CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200", "--disable-host-check"]
+FROM nginx:alpine
+COPY dist/angular-with-ant-design/* /usr/share/nginx/html/
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 4200 
+CMD ["nginx", "-g", "daemon off;"]

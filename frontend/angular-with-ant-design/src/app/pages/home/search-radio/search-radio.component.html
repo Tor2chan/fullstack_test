@@ -12,7 +12,7 @@
         
         <div class="flex align-items-center gap-3">
             <label for="search_by2">
-                Search by email
+                Search by email or username
             </label>
             <!-- {{email_value}} -->
             <input type="text" pInputText [(ngModel)]="email_value" />
@@ -21,8 +21,24 @@
                 Search
             </button>
         </div>
-        
+
         <div class="flex align-items-center gap-3">
+            <label for="search_by2">
+                Search by role
+            </label>
+            <p-dropdown 
+            [options]="roles" 
+            [(ngModel)]="selectedRoles" 
+            optionLabel="role"
+            placeholder="select" />
+            
+            <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1.5 px-2.5 border border-blue-500 hover:border-transparent rounded"
+                    (click)="click_search_email()">
+                Search
+            </button>
+        </div>
+        
+        <!-- <div class="flex align-items-center gap-3">
             <label for="search_by3">
                 Search by username
             </label>
@@ -31,6 +47,6 @@
                     (click)="click_search_username()">
                 Search
             </button>
-        </div>
+        </div> -->
     </div>
 </div>

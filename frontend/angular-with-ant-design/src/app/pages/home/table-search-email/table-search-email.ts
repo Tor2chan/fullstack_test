@@ -55,35 +55,35 @@ export class TableEmail {
     });
   }
 
-  // applyFilter() {
-  //   if (!this.Users.length) {
-  //     console.warn('No users to filter');
-  //     return; 
-  //   }
-  
-  //   const emailFilter = this.filterEmail();
-  //   console.log('Applying filter:', emailFilter);
-
-  //   if (emailFilter.trim()) {
-  //     this.filteredUsers = this.Users.filter(user =>
-  //       user.email?.toLowerCase().includes(emailFilter.toLowerCase())
-  //     );
-  //   } else {
-  //     this.filteredUsers = [...this.Users]; 
-  //   }
-
-  //   console.log('Filtered users:', this.filteredUsers);
-  // }
-
   applyFilter() {
-    if (this.filterEmail().trim()) {
+    if (!this.Users.length) {
+      console.warn('No users to filter');
+      return; 
+    }
+  
+    const emailFilter = this.filterEmail();
+    console.log('Applying filter:', emailFilter);
+
+    if (emailFilter.trim()) {
       this.filteredUsers = this.Users.filter(user =>
-        user.email?.toLowerCase() === this.filterEmail().toLowerCase()
+        user.email?.toLowerCase().includes(emailFilter.toLowerCase()) || user.username?.toLowerCase().includes(emailFilter.toLowerCase())
       );
     } else {
-      this.filteredUsers = [];
+      this.filteredUsers = [...this.Users]; 
     }
+
+    console.log('Filtered users:', this.filteredUsers);
   }
+
+  // applyFilter() {
+  //   if (this.filterEmail().trim()) {
+  //     this.filteredUsers = this.Users.filter(user =>
+  //       user.email?.toLowerCase() === this.filterEmail().toLowerCase()
+  //     );
+  //   } else {
+  //     this.filteredUsers = [];
+  //   }
+  // }
 
   onRoleChange(user: User, event: any) {
     if (!user.id) return;

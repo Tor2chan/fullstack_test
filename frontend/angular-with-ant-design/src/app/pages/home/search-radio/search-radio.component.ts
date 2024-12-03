@@ -1,20 +1,36 @@
-import { Component,Output, EventEmitter }from '@angular/core';
+import { Component,Output, EventEmitter, OnInit }from '@angular/core';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+
+interface Roles {
+  role: string;
+}
 
 @Component({
   selector: 'app-search-radio',
   standalone: true,
-  imports: [FormsModule, RadioButtonModule, InputTextModule, ButtonModule],
+  imports: [FormsModule, RadioButtonModule, InputTextModule, ButtonModule, DropdownModule],
   templateUrl: './search-radio.component.html',
   styleUrl: './search-radio.component.css'
 })
 
+
 export class SearchRadioComponent {
+  roles: Roles[] | undefined;
+  selectedRoles: Roles | undefined;
   email_value: string = '';  
   username_value: string = '';
+
+
+  ngOnInit() {
+    this.roles = [
+        { role: 'user'},
+        { role: 'admin'},];
+}
+
 
   @Output() searchAll = new EventEmitter<void>();
   @Output() searchByEmail = new EventEmitter<string>();

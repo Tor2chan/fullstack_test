@@ -12,3 +12,4 @@ public class TestFullstackApplication {
         SpringApplication.run(TestFullstackApplication.class, args);
     }
 }
+

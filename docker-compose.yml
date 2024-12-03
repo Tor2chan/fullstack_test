@@ -10,30 +10,24 @@ services:
     depends_on:
       - database
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/first_database
-      - SPRING_DATASOURCE_USERNAME=sutthipongk
-      - SPRING_DATASOURCE_PASSWORD=29407
+      - SPRING_DATASOURCE_URL=jdbc:mysql://10.11.60.118:33306/intern?useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=P@ssw0rdR3dcr0ss
 
   database:
-    image: postgres:13
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    image: mysql:8.0
     environment:
-      - POSTGRES_DB=first_database
-      - POSTGRES_USER=sutthipongk
-      - POSTGRES_PASSWORD=29407
-    ports:
-      - "5432:5432"
+      - DB_HOST=10.11.60.118
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=intern  
+      - MYSQL_USER=sa  
+      - MYSQL_PASSWORD=P@ssw0rdR3dcr0ss 
 
-  # file-upload:
-  #   build: 
-  #     context: ./backend/db-upload
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - ./uploads:/app/uploads
-  #   depends_on:
-  #     - backend
-  #     - database
-      
+    ports:
+      - "33306:33306"  
+    volumes:
+      - mysql_data:/var/lib/mysql  
+
 volumes:
-  postgres_data:
+  mysql_data:
+    driver: local  

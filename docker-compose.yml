@@ -1,12 +1,10 @@
-version: '3.8'
-
 services:
   backend:
     build:
       context: ./backend/test_fullstack
       dockerfile: Dockerfile
     volumes:
-      - ./uploads:/app/backend/db-upload/profile-pictures 
+    - ./backend/db-upload/profile-pictures:/app/backend/db-upload/profile-pictures
     ports:
       - "8080:8080"
     depends_on:

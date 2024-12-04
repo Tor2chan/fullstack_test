@@ -2,9 +2,9 @@ db intern                 --->  1
 fillter by role(dropdown) --->  1
 search รวม email+username --->  1
 add row order             --->  1
-show table before add user--->  0
+show table before add user--->  1
 format email, pass        --->  0
-change pass alert         --->  0
+change pass alert         --->  1
 
 
 

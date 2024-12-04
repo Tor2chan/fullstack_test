@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common'; 
 import { FormsModule } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
+import { InputTextModule } from 'primeng/inputtext';
+import { DialogModule } from 'primeng/dialog';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { UserChangePasswordService, User } from '../../../services/user-services/user-change-password.service';
 @Component({
@@ -10,16 +12,16 @@ import { UserChangePasswordService, User } from '../../../services/user-services
   standalone: true,
   templateUrl: './user-info-change-password.component.html',
   styleUrls: ['./user-info-change-password.component.css'],
-  imports: [FormsModule,CommonModule,BreadcrumbModule]
+  imports: [FormsModule,CommonModule,BreadcrumbModule,InputTextModule,DialogModule]
 })
 export class UserInfoChangePasswordComponent implements OnInit{
   user: User | null = null;
   items: MenuItem[] | undefined;
-
+  visible: boolean = false; 
+  dialogMessage: string = '';
   currentPassword: string = '';
   newPassword: string = '';
   confirmPassword: string = '';
-  errorMessage: string = '';
 
   constructor(private userService: UserChangePasswordService, private router: Router) {}
 
@@ -47,20 +49,31 @@ export class UserInfoChangePasswordComponent implements OnInit{
     }
   }
 
+  showDialog() {
+    this.visible = true;
+  }
+
+  onDialogClose(){
+    this.visible = false;
+  }
+  
   changePassword() {
     if (!this.newPassword || !this.confirmPassword) {
-      this.errorMessage = 'Please fill in all fields.';
+      this.dialogMessage = 'Please enter new password'
+      this.showDialog();
       return;
     }
 
     if (this.newPassword !== this.confirmPassword) {
-      this.errorMessage = 'New password and confirm password do not match.';
+      this.dialogMessage = 'New password and confirm password do not match'
+      this.showDialog();
       return;
     }
 
     const sessionUser = sessionStorage.getItem('sessionUser');
     if (!sessionUser) {
-      this.errorMessage = 'No user is logged in.';
+      this.dialogMessage = 'No user is logged in'
+      this.showDialog();
       this.router.navigate(['signin']);
       return;
     }
@@ -72,7 +85,8 @@ export class UserInfoChangePasswordComponent implements OnInit{
       },
       error: (error) => {
         console.error('Error changing password:', error);
-        this.errorMessage = 'Failed to update password. Please try again.';
+        this.dialogMessage = 'failed to update password'
+        this.showDialog();
       },
     });
   }

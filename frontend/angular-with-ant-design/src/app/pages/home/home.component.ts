@@ -26,7 +26,7 @@ export class HomeComponent {
 
   constructor(private userService: UserService, private router: Router){}
 
-  showAll = false;
+  showAll = true;
   showEmail = false;
   showRole = false;
   email_value: string = '';
@@ -95,6 +95,7 @@ export class HomeComponent {
         this.newUser = {};
         this.toggleModal();
         this.reload();
+        this.showAll = true;
       },
       error: (error) => {
         console.error('Error adding user:', error);

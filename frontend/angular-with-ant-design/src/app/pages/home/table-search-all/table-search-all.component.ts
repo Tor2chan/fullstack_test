@@ -81,6 +81,7 @@ export class TableAll implements OnInit {
                 next: () => {
                     this.Users = this.Users.filter(user => user.id !== userId);
                     this.toggleModal();
+                    window.location.reload();
                 },
                 error: (error) => {
                     console.error('Error deleting user:', error);

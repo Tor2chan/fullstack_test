@@ -29,21 +29,24 @@ export class SearchRadioComponent {
     this.roles = [
         { role: 'user'},
         { role: 'admin'},];
+        this.selectedRoles = this.roles[0];
 }
 
 
   @Output() searchAll = new EventEmitter<void>();
   @Output() searchByEmail = new EventEmitter<string>();
+  @Output() searchByRole = new EventEmitter<string>();
+  
   @Output() searchByUsername = new EventEmitter<string>();
 
   click_search_all() {
       this.searchAll.emit();
       this.email_value = "";
-      this.username_value = "";
+      // this.username_value = "";
   }
 
   click_search_email() {
-    this.username_value = "";
+    // this.username_value = "";
     console.log("Email Value:", this.email_value);
 
    if (!this.email_value || this.email_value.trim() === '') {
@@ -53,16 +56,29 @@ export class SearchRadioComponent {
     this.searchByEmail.emit(this.email_value);
 }
 
-
-  click_search_username() {
+  click_search_role() {
     this.email_value = "";
-    console.log("Username Value:", this.username_value);
+    console.log("Role Value:", this.selectedRoles);
 
-    if (!this.username_value || this.username_value.trim() === '') {
-       alert("fill username!");
-       return;
-     }
+    if (!this.selectedRoles) {
+        alert("Please select a role!");
+        return;
+    }
 
-      this.searchByUsername.emit(this.username_value);
+    this.searchByRole.emit(this.selectedRoles.role);
   }
+
+
+
+  // click_search_username() {
+  //   this.email_value = "";
+  //   console.log("Username Value:", this.username_value);
+
+  //   if (!this.username_value || this.username_value.trim() === '') {
+  //      alert("fill username!");
+  //      return;
+  //    }
+
+  //     this.searchByUsername.emit(this.username_value);
+  // }
 }

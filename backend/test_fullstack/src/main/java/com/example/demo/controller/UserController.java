@@ -29,7 +29,7 @@ public class UserController {
     @GetMapping
     public List<User> getAllUsers() {
         return userRepository.findAll();
-    }
+    }   
 
     @PostMapping
     public User createUser(@RequestBody User user) {

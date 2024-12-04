@@ -12,15 +12,17 @@
         >
             <ng-template pTemplate="header">
                 <tr>
-                    <th style="width:22%">email</th>
-                    <th style="width:22%">username</th>
-                    <th style="width:22%">name</th>
-                    <th style="width:22%">role</th>
+                    <th style="width:10%; padding-left: 50px;">#</th>
+                    <th style="width:20%">email</th>
+                    <th style="width:20%">username</th>
+                    <th style="width:20%">name</th>
+                    <th style="width:20%">role</th>
                     <th>edit user</th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-user>
+            <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
                 <tr>
+                    <td style="padding-left: 50px;">{{rowIndex + 1}}</td>
                     <td>{{user.email}}</td>
                     <td>{{user.username}}</td>
                     <td>{{user.name}}</td>

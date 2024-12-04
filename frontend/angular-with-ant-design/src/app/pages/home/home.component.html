@@ -96,7 +96,7 @@
     <app-search-radio 
       (searchAll)="onSearchAll()"
       (searchByEmail)="onSearchByEmail($event)"
-      (searchByUsername)="onSearchByUsername($event)">
+      (searchByRole)=" onSearchByRole($event)">
     </app-search-radio>
   </div>
 
@@ -108,6 +108,6 @@
     <app-table-email [filterEmail]="email_value"></app-table-email>
   </div>
   
-  <!-- <div *ngIf="showUsername">
-    <app-table-username [filterUsername]="username_value"></app-table-username>
-  </div> -->
+  <div *ngIf="showRole">
+    <app-table-role [filterRole]="roles"></app-table-role>
+  </div>

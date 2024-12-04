@@ -5,7 +5,8 @@ import { CommonModule } from '@angular/common';
 import { SearchRadioComponent } from "./search-radio/search-radio.component";
 import { TableAll } from './table-search-all/table-search-all.component';
 import { TableEmail } from './table-search-email/table-search-email';
-import { TableUsername } from './table-search-username/table-search-username';
+import { TableRole } from './table-search-role/table-search-role';
+// import { TableUsername } from './table-search-username/table-search-username';
 import { InputTextModule } from 'primeng/inputtext';
 import { DialogModule } from 'primeng/dialog';
 import { Router } from '@angular/router';
@@ -14,7 +15,7 @@ import { UserService, User } from '../../services/user-services/user.service';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule,CommonModule,RadioButtonModule,TableEmail,TableAll,TableUsername,SearchRadioComponent,InputTextModule,DialogModule],
+  imports: [FormsModule, CommonModule, RadioButtonModule, TableEmail, TableAll, SearchRadioComponent, InputTextModule, DialogModule, TableRole],
   templateUrl: `./home.component.html`,
   styleUrl: './home.component.css'
 })
@@ -27,9 +28,10 @@ export class HomeComponent {
 
   showAll = false;
   showEmail = false;
-  showUsername = false;
+  showRole = false;
   email_value: string = '';
   username_value: string = '';
+  roles = '';
   showModal = false;
   visible: boolean = false;
   dialogMessage: string = '';
@@ -121,21 +123,28 @@ export class HomeComponent {
   onSearchAll() {
     this.showAll = true;
     this.showEmail = false;
-    this.showUsername = false;
+    this.showRole = false;
   }
 
   onSearchByEmail(email: string) {
     this.showAll = false;
     this.showEmail = true;
-    this.showUsername = false;
+    this.showRole = false;
     this.email_value = email;
   }
 
-  onSearchByUsername(username: string) {
+  onSearchByRole(roles: string) {
     this.showAll = false;
     this.showEmail = false;
-    this.showUsername = true;
-    this.username_value = username;
+    this.showRole = true;
+    this.roles = roles;
   }
+
+  // onSearchByUsername(username: string) {
+  //   this.showAll = false;
+  //   this.showEmail = false;
+  //   this.showUsername = true;
+  //   this.username_value = username;
+  // }
 }
 

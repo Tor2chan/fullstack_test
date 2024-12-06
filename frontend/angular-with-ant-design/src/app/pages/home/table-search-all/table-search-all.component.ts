@@ -3,6 +3,8 @@ import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ConfirmDialogModule } from 'primeng/confirmdialog'; // Added import for Confirm Dialog
+import { ConfirmationService } from 'primeng/api'; // Added import for ConfirmationService
 import { UserService, User } from '../../../services/user-services/user.service';
 
 interface Role {
@@ -18,8 +20,10 @@ interface Role {
         CommonModule, 
         DropdownModule, 
         FormsModule, 
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        ConfirmDialogModule // Added ConfirmDialogModule
     ],
+    providers: [ConfirmationService] // Added ConfirmationService as a provider
 })
 export class TableAll implements OnInit {
     Users: User[] = [];
@@ -33,7 +37,10 @@ export class TableAll implements OnInit {
     currentUsername: string = '';
     currentUserId: number = 0;
 
-    constructor(private userService: UserService) {}
+    constructor(
+        private userService: UserService,
+        private confirmationService: ConfirmationService // Inject ConfirmationService
+    ) {}
 
     ngOnInit() {
         if (typeof sessionStorage !== 'undefined') {
@@ -48,7 +55,6 @@ export class TableAll implements OnInit {
         this.loadUsers();
     }
 
-    //show edit 
     shouldShowEditButton(username: string, userId: number): boolean {
         return username !== this.currentUsername && userId !== this.currentUserId;
     }
@@ -91,19 +97,29 @@ export class TableAll implements OnInit {
         console.log(`Changed role for user ${user.username} to ${newRole.role}`);
     }
     
+    // Modified deleteUser method to use PrimeNG Confirmation Dialog
     deleteUser(userId: number) {
-        if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้นี้?')) {
-            this.userService.deleteUser(userId).subscribe({
-                next: () => {
-                    this.Users = this.Users.filter(user => user.id !== userId);
-                    this.toggleModal();
-                    window.location.reload();
-                },
-                error: (error) => {
-                    console.error('เกิดข้อผิดพลาดในการลบผู้ใช้:', error);
-                }
-            });
-        }
+        this.confirmationService.confirm({
+            message: 'Are you sure about that?',
+            header: 'CONFIRM DELETE',
+            icon: 'pi pi-info-circle',
+            acceptButtonStyleClass: 'text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900',
+            rejectButtonStyleClass: 'text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900',
+            acceptIcon: 'none',
+            rejectIcon: 'none',
+            accept: () => {
+                this.userService.deleteUser(userId).subscribe({
+                    next: () => {
+                        this.Users = this.Users.filter(user => user.id !== userId);
+                        this.toggleModal();
+                        window.location.reload();
+                    },
+                    error: (error) => {
+                        console.error('เกิดข้อผิดพลาดในการลบผู้ใช้:', error);
+                    }
+                });
+            }
+        });
     }
 
     saveUserChanges() {

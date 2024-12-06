@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
+import { DialogModule } from 'primeng/dialog';
 
 interface Roles {
   role: string;
@@ -12,7 +13,7 @@ interface Roles {
 @Component({
   selector: 'app-search-radio',
   standalone: true,
-  imports: [FormsModule, RadioButtonModule, InputTextModule, ButtonModule, DropdownModule],
+  imports: [FormsModule, RadioButtonModule, InputTextModule, ButtonModule, DropdownModule, DialogModule],
   templateUrl: './search-radio.component.html',
   styleUrl: './search-radio.component.css'
 })
@@ -23,7 +24,8 @@ export class SearchRadioComponent {
   selectedRoles: Roles | undefined;
   email_value: string = '';  
   username_value: string = '';
-
+  visible: boolean = false; 
+  dialogMessage: string = '';
 
   ngOnInit() {
     this.roles = [
@@ -39,6 +41,14 @@ export class SearchRadioComponent {
   
   @Output() searchByUsername = new EventEmitter<string>();
 
+  showDialog() {
+    this.visible = true;
+  }
+
+  onDialogClose(){
+    this.visible = false;
+  }
+
   click_search_all() {
       this.searchAll.emit();
       this.email_value = "";
@@ -50,7 +60,8 @@ export class SearchRadioComponent {
     console.log("Email Value:", this.email_value);
 
    if (!this.email_value || this.email_value.trim() === '') {
-      alert("fill email!");
+    this.dialogMessage = 'plase fill email'
+    this.showDialog();
       return;
     }
     this.searchByEmail.emit(this.email_value);

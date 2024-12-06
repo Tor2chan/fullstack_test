@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserService, User } from '../../../services/user-services/user.service';
+
 interface Role {
     role: string;
 }
@@ -29,11 +30,27 @@ export class TableAll implements OnInit {
     ];
 
     showModal = false;
+    currentUsername: string = '';
+    currentUserId: number = 0;
 
     constructor(private userService: UserService) {}
 
     ngOnInit() {
+        if (typeof sessionStorage !== 'undefined') {
+            const sessionUser = sessionStorage.getItem('sessionUser');
+            if (sessionUser) {
+                const user = JSON.parse(sessionUser);
+                this.currentUsername = user.username;
+                this.currentUserId = user.id;
+            }
+        }
+
         this.loadUsers();
+    }
+
+    //show edit 
+    shouldShowEditButton(username: string, userId: number): boolean {
+        return username !== this.currentUsername && userId !== this.currentUserId;
     }
 
     loadUsers() {
@@ -73,10 +90,9 @@ export class TableAll implements OnInit {
     
         console.log(`Changed role for user ${user.username} to ${newRole.role}`);
     }
-
     
     deleteUser(userId: number) {
-        if (confirm('Are you sure you want to delete this user?')) {
+        if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้นี้?')) {
             this.userService.deleteUser(userId).subscribe({
                 next: () => {
                     this.Users = this.Users.filter(user => user.id !== userId);
@@ -84,7 +100,7 @@ export class TableAll implements OnInit {
                     window.location.reload();
                 },
                 error: (error) => {
-                    console.error('Error deleting user:', error);
+                    console.error('เกิดข้อผิดพลาดในการลบผู้ใช้:', error);
                 }
             });
         }
@@ -104,13 +120,13 @@ export class TableAll implements OnInit {
                             selectedRole: { role: newRole }
                         };
                     }
-                    console.log(`Successfully updated role for user ${this.selectedUser.username}`);
+                    console.log(`อัปเดตบทบาทของผู้ใช้ ${this.selectedUser.username} สำเร็จ`);
                     this.toggleModal();
                     this.loadUsers();
                 },
                 error: (error) => {
-                    console.error('Error updating user role:', error);
-                    alert('Failed to update user role. Please try again.');
+                    console.error('เกิดข้อผิดพลาดในการอัปเดตบทบาทผู้ใช้:', error);
+                    alert('ไม่สามารถอัปเดตบทบาทผู้ใช้ได้ กรุณาลองอีกครั้ง');
                 }
             });
         } else {

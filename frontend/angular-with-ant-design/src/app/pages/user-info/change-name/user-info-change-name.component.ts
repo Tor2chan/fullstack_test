@@ -4,8 +4,11 @@ import { CommonModule } from '@angular/common';
 import { MenuItem } from 'primeng/api';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { InputTextModule } from 'primeng/inputtext';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ValidatorFn, AbstractControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { UserChangeNameService, User } from '../../../services/user-services/user-change-name.service';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+
 @Component({
   selector: 'app-user-info',
   standalone: true,
@@ -13,22 +16,35 @@ import { UserChangeNameService, User } from '../../../services/user-services/use
     CommonModule,
     BreadcrumbModule,
     InputTextModule,
-    FormsModule
+    FormsModule,
+    DialogModule,
+    ButtonModule
   ],       
   templateUrl: './user-info-change-name.component.html',
   styleUrl: './user-info-change-name.component.css'
 })
 export class UserInfoChangeNameComponent implements OnInit {
+  loginForm: FormGroup;
   user: User | null = null;
   newName: string = '';
   items: MenuItem[] | undefined;
   currentProfilePicture: string | null = null;
   isNameChanged: boolean = false;
+  visible: boolean = false;
+  dialogMessage: string = '';
 
   constructor(
+    private fb: FormBuilder, 
     private router: Router, 
     private userService: UserChangeNameService
-  ) {}
+  ) {
+    this.loginForm = this.fb.group({
+      name: ['', [
+        Validators.required, 
+        this.nameValidator()
+      ]]
+    });
+  }
 
   ngOnInit() {
     this.items = [
@@ -54,41 +70,70 @@ export class UserInfoChangeNameComponent implements OnInit {
     }
   }
 
+  // ฟังก์ชันตรวจสอบชื่อ
+  nameValidator(): ValidatorFn {
+    return (control: AbstractControl): {[key: string]: any} | null => {
+      const nameRegex = /^[ก-๏a-zA-Z\s]+$/; // รองรับภาษาไทยและอังกฤษ
+      const valid = nameRegex.test(control.value) && 
+                    control.value.trim().length >= 2 && // ชื่ออย่างน้อย 2 ตัวอักษร
+                    control.value.trim().length <= 50; // จำกัดความยาวสูงสุด
+      return valid ? null : {'invalidName': {value: control.value}};
+    };
+  }
+
+  showDialog() {
+    this.visible = true;
+  }
+
+  onDialogClose(){
+    this.visible = false;
+  }
+
   updateName() {
-    // Validate name input
+    // ตรวจสอบชื่อว่างเปล่า
     if (!this.newName.trim()) {
-      alert('Please enter a valid name');
+      this.dialogMessage = 'please enter new name';
+      this.showDialog();
+      return;
+    }
+  
+    // ตรวจสอบความถูกต้องของชื่อโดยตรง
+    const nameRegex = /^[ก-๏a-zA-Z\s]+$/;
+    const isValidName = nameRegex.test(this.newName) && 
+                        this.newName.trim().length >= 2 && 
+                        this.newName.trim().length <= 50;
+    
+    if (!isValidName) {
+      // ชื่อไม่ถูกต้อง
+      this.dialogMessage = 'please enter correct name (only character)';
+      this.showDialog();
       return;
     }
 
-    // Ensure we have a user and a valid user ID
-    if (this.user && this.user.id !== undefined) {  // Ensure that id is defined
+    // ตรวจสอบว่ามี User และ ID
+    if (this.user && this.user.id !== undefined) {  
       this.userService.updateName(this.user.id, this.newName).subscribe({
         next: (updatedUser) => {
-          // Update the user in session storage
+          // อัปเดต Session Storage
           if (typeof sessionStorage !== 'undefined') {
-            // Create a new object that merges existing user data with the updated name
             const updatedSessionUser = { ...this.user, name: updatedUser.name };
             sessionStorage.setItem('sessionUser', JSON.stringify(updatedSessionUser));
             
-            // Update the local user object
+            // อัปเดต Local User Object
             this.user = updatedSessionUser;
           } 
           
-          // Show success message 
-          console.log("name changed")
-
-          // Navigate back or reload
+          console.log("change name success")
           this.router.navigate(['user-info']);
         },
         error: (error) => {
-          console.error('Error updating name', error);
-          alert('Failed to update name. Please try again.');
+          console.error('have some error cant update name', error);
+          alert('have some error cant update name');
         }
       });
     } else {
-      console.error('User ID is missing.');
-      alert('User ID is not available. Please log in again.');
+      console.error('User Not Found');
+      alert('User Not Found please login again');
     }
   }
 

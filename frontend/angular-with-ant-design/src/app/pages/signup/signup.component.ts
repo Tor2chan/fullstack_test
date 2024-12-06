@@ -87,7 +87,6 @@ export class SignupComponent {
   addUser(): void {
     this.submitted = true;
 
-
     if (this.loginForm.invalid) {
       if (this.loginForm.get('email')?.invalid) {
         this.dialogMessage = 'please enter correct email';
@@ -96,7 +95,7 @@ export class SignupComponent {
       }
       
       if (this.loginForm.get('name')?.invalid) {
-        this.dialogMessage = 'please enter correct name';
+        this.dialogMessage = 'please enter correct name (only character)';
         this.showDialog();
         return;
       }
@@ -149,9 +148,11 @@ export class SignupComponent {
     this.visible = true;
   }
 
-
-
   home_redirect(){
     this.router.navigate(['signin']);
+  }
+
+    onDialogClose(){
+    this.visible = false;
   }
 }

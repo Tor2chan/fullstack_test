@@ -69,7 +69,7 @@ export class UserInfoChangePasswordComponent implements OnInit{
       this.showDialog();
       return;
     }
-
+    
     const sessionUser = sessionStorage.getItem('sessionUser');
     if (!sessionUser) {
       this.dialogMessage = 'No user is logged in'
@@ -85,12 +85,12 @@ export class UserInfoChangePasswordComponent implements OnInit{
       },
       error: (error) => {
         console.error('Error changing password:', error);
-        this.dialogMessage = 'failed to update password'
+        this.dialogMessage = 'current password is incorrect'
         this.showDialog();
       },
     });
   }
-
+  
   reload(){
     window.location.reload();
   }

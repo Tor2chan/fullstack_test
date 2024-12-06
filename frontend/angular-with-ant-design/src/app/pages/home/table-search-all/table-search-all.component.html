@@ -10,14 +10,14 @@
             [sortOrder]="1"
             [customSort]="false"
         >
-            <ng-template pTemplate="header">
+            <ng-template pTemplate="header" let-rowIndex="rowIndex">
                 <tr>
                     <th style="width:10%; padding-left: 50px;">#</th>
                     <th style="width:20%">email</th>
                     <th style="width:20%">username</th>
                     <th style="width:20%">name</th>
                     <th style="width:20%">role</th>
-                    <th>edit user</th>
+                    <th >edit user</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
@@ -27,13 +27,14 @@
                     <td>{{user.username}}</td>
                     <td>{{user.name}}</td>
                     <td>{{user.role}}</td>
-                    <td>
+                    <td *ngIf="shouldShowEditButton(user.username, user.id)">
                         <button type="button" 
                                 (click)="toggleModal(user)" 
                                 class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">
                             edit
                         </button>
                     </td>
+                    <td *ngIf="!shouldShowEditButton(user.username, user.id)"></td>
                 </tr>
             </ng-template>
         </p-table>

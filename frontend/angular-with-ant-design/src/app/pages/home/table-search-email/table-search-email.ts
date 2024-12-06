@@ -27,6 +27,10 @@ export class TableEmail {
     { role: 'user' },
   ];
 
+  showModal = false;
+  currentUsername: string = '';
+  currentUserId: number = 0;
+
   constructor(private userService: UserService) {
     effect(() => {
       console.log('Filter Email:', this.filterEmail());
@@ -35,8 +39,20 @@ export class TableEmail {
   }
 
   ngOnInit() {
+    if (typeof sessionStorage !== 'undefined') {
+      const sessionUser = sessionStorage.getItem('sessionUser');
+      if (sessionUser) {
+          const user = JSON.parse(sessionUser);
+          this.currentUsername = user.username;
+          this.currentUserId = user.id;
+      }
+  }
     this.loadUsers();
   }
+
+  shouldShowEditButton(username: string, userId: number): boolean {
+    return username !== this.currentUsername && userId !== this.currentUserId;
+}
 
   loadUsers() {
     this.userService.getUsers().subscribe({
@@ -99,7 +115,6 @@ export class TableEmail {
     console.log(`Updated role for user ${user.username} to ${newRole.role}`);
   }
 
-  showModal = false;
   toggleModal(user?: User) {
     if (user) {
       this.selectedUser = {

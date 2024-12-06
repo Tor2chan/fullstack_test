@@ -124,7 +124,7 @@ export class UserInfoChangeNameComponent implements OnInit {
           } 
           
           console.log("change name success")
-          this.router.navigate(['user-info']);
+          this.router.navigate(['user-info']).then(() => window.location.reload());
         },
         error: (error) => {
           console.error('have some error cant update name', error);

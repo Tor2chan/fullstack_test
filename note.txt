@@ -9,5 +9,5 @@ change pass alert         --->  1
 signup (name format character)      1
 change name (name format character) 1
 change alert to dialog              1
-show current user login             0
+show current user login             1
 

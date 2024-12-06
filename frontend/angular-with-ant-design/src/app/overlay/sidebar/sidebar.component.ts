@@ -15,6 +15,8 @@ export class SidebarComponent implements OnInit {
   items: MenuItem[] | undefined;
   isLoggedIn: boolean = false;
   isAdmin: boolean = false;
+  userName: string = '';
+  userUsername: string = '';
 
   constructor(private router: Router) {}
 
@@ -25,10 +27,13 @@ export class SidebarComponent implements OnInit {
         const user = JSON.parse(sessionUser);
         this.isLoggedIn = true;
         this.isAdmin = user.role === 'admin'; // ตรวจสอบ role ของผู้ใช้
+        
+        // Set user name and username
+        this.userName = user.name || 'User';
+        this.userUsername = user.username || '';
       }
     }
 
-   
     this.items = [
       {
         label: 'Info',
@@ -58,6 +63,8 @@ export class SidebarComponent implements OnInit {
     sessionStorage.removeItem('sessionUser');  
     this.isLoggedIn = false;
     this.isAdmin = false;
+    this.userName = '';
+    this.userUsername = '';
     this.router.navigate(['signin']).then(() => window.location.reload());
   }
 }

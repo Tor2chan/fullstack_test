@@ -1,84 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <div class="login-container">
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-          <div class="title-center"><h2>Sign up</h2></div>
-          
-          <!-- dialog -->
-          <div>
-            <p-dialog   
-            header="Tips" 
-            [(visible)]="visible" 
-            [modal]="true"
-            [style]="{width: '350px', bottom: '10%'}"
-            (onHide)="closeDialog()">
-            <div class="text-center">
-              <p>{{ dialogMessage }}</p>
-              <button 
-                (click)="closeDialog()" 
-                class="mt-3 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                Close
-              </button>
-            </div>
-          </p-dialog>
-          </div>
+<div class="login-container">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="title-center"><h2>Sign up</h2></div>
+    
+    <!-- dialog -->
+    <div>
+      <p-dialog   
+        header="Tips" 
+        [(visible)]="visible" 
+        [modal]="true"
+        [style]="{width: '350px', bottom: '10%'}">
+        <div class="text-center">
+          <p>{{ dialogMessage }}</p>
+        </div>
+      </p-dialog>
+    </div>
 
-          <div class="form-group">
-            <label for="email">email:</label>
-            <input 
-              type="text" 
-              id="email"
-              formControlName="email"
-              class="form-control">
-            <div *ngIf="submitted && loginForm.get('email')?.invalid" class="error-message">
-              Enter your email
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="username">Username:</label>
-            <input 
-              type="text" 
-              id="username"
-              formControlName="username"
-              class="form-control">
-            <div *ngIf="submitted && loginForm.get('username')?.invalid" class="error-message">
-              Enter your username
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="name">name:</label>
-            <input 
-              type="text" 
-              id="name"
-              formControlName="name"
-              class="form-control">
-            <div *ngIf="submitted && loginForm.get('name')?.invalid" class="error-message">
-              Enter your name
-            </div>
-          </div>
-  
-          <div class="form-group">
-            <label for="password">Password:</label>
-            <input 
-              type="password" 
-              id="password"
-              formControlName="password"
-              class="form-control">
-            <div *ngIf="submitted && loginForm.get('password')?.invalid" class="error-message">
-              Enter your password
-            </div>
-          </div>
-  
-          <button type="submit" (click)="addUser()">Sign up</button>
-        </form>
+    <div class="form-group">
+      <label for="email">email:</label>
+      <input 
+        type="text" 
+        id="email"
+        formControlName="email"
+        class="form-control">
+      <div *ngIf="submitted && loginForm.get('email')?.invalid" class="error-message">
+        Enter your email
       </div>
-</body>
-</html>
+    </div>
+    
+    <div class="form-group">
+      <label for="username">username:</label>
+      <input 
+        type="text" 
+        id="username"
+        formControlName="username"
+        class="form-control">
+      <div *ngIf="submitted && loginForm.get('username')?.invalid" class="error-message">
+        Enter your username
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="name">name:</label>
+      <input 
+        type="text" 
+        id="name"
+        formControlName="name"
+        class="form-control">
+      <div *ngIf="submitted && loginForm.get('name')?.invalid" class="error-message">
+        Enter your name
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">password:</label>
+      <input 
+        type="password" 
+        id="password"
+        formControlName="password"
+        class="form-control">
+      <div *ngIf="submitted && loginForm.get('password')?.invalid" class="error-message">
+        Enter your password
+      </div>
+    </div>
+
+    <button type="submit" (click)="addUser()">Sign up</button>
+  </form>
+</div>

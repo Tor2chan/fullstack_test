@@ -1,6 +1,6 @@
 import { Component} from '@angular/core';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { FormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule, ValidatorFn} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SearchRadioComponent } from "./search-radio/search-radio.component";
 import { TableAll } from './table-search-all/table-search-all.component';
@@ -15,7 +15,7 @@ import { UserService, User } from '../../services/user-services/user.service';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, CommonModule, RadioButtonModule, TableEmail, TableAll, SearchRadioComponent, InputTextModule, DialogModule, TableRole],
+  imports: [FormsModule, CommonModule, RadioButtonModule, TableEmail, TableAll, SearchRadioComponent, InputTextModule, DialogModule, TableRole, ReactiveFormsModule],
   templateUrl: `./home.component.html`,
   styleUrl: './home.component.css'
 })
@@ -23,10 +23,9 @@ import { UserService, User } from '../../services/user-services/user.service';
 export class HomeComponent {
   users: User[] = [];
   newUser: Partial<User> = {};
-
-  constructor(private userService: UserService, private router: Router){}
-
+  loginForm: FormGroup;
   showAll = true;
+  submitted = false;  
   showEmail = false;
   showRole = false;
   email_value: string = '';
@@ -35,6 +34,53 @@ export class HomeComponent {
   showModal = false;
   visible: boolean = false;
   dialogMessage: string = '';
+
+  constructor(private userService: UserService, private router: Router, private fb: FormBuilder, ){
+    this.loginForm = this.fb.group({
+      email: ['', [
+        Validators.required, 
+        this.emailValidator()
+      ]],
+      username: ['', Validators.required],
+      name: ['', [
+        Validators.required, 
+        this.nameValidator()
+      ]],
+      password: ['', [
+        Validators.required, 
+        this.passwordValidator()
+      ]]
+    });
+  }
+
+   // Email Validator
+   emailValidator(): ValidatorFn {
+    return (control: AbstractControl): {[key: string]: any} | null => {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      const valid = emailRegex.test(control.value);
+      return valid ? null : {'invalidEmail': {value: control.value}};
+    };
+  }
+
+  // Name Validator
+  nameValidator(): ValidatorFn {
+    return (control: AbstractControl): {[key: string]: any} | null => {
+      const nameRegex = /^[ก-๏a-zA-Z\s]+$/;
+      const valid = nameRegex.test(control.value);
+      return valid ? null : {'invalidName': {value: control.value}};
+    };
+  }
+
+  // Password Validator
+  passwordValidator(): ValidatorFn {
+    return (control: AbstractControl): {[key: string]: any} | null => {
+      const value = control.value;
+      const hasLetter = /[a-zA-Z]/.test(value);
+      const hasNumber = /[0-9]/.test(value);
+      const valid = hasLetter && hasNumber;
+      return valid ? null : {'invalidPassword': {value: control.value}};
+    };
+  }
 
   ngOnInit(): void {
     this.userService.getUsers().subscribe((data) => (this.users = data));
@@ -55,53 +101,70 @@ export class HomeComponent {
     }
   }
 
-  addUser(): void {
-    // check input
-    if (!this.newUser.name || 
-        !this.newUser.email || 
-        !this.newUser.username || 
-        !this.newUser.password) {
-
-      this.dialogMessage = "Complete account info ?";
-      this.showDialog();
-      return;
-    }
-  
-    // check username
-    const isDuplicateUsername = this.users.some(user => user.username === this.newUser.username);
-    if (isDuplicateUsername) {
-      this.dialogMessage = "Already have this username";
-      this.showDialog();
-      return;
-    }
-
-    // check email
-    const isDuplicateEmail = this.users.some(user => user.email === this.newUser.email);
-    if (isDuplicateEmail) {
-      this.dialogMessage = "Already have this email";
-      this.showDialog();
-      return;
-    }
-  
-    // Set default role 
-    if (!this.newUser.role) {
-      this.newUser.role = "user";
-    }
-  
-    // PUSH
-    this.userService.addUser(this.newUser as User).subscribe({
-      next: (user) => {
-        this.users.push(user);
-        this.newUser = {};
-        this.toggleModal();
-        this.reload();
-        this.showAll = true;
-      },
-      error: (error) => {
-        console.error('Error adding user:', error);
-      }
-    });
+  onSubmit() {
+    this.submitted = true;
   }
+  
+  addUser(): void {
+    this.submitted = true;
+
+    if (this.loginForm.invalid) {
+      if (this.loginForm.get('email')?.invalid) {
+        this.dialogMessage = 'please enter correct email';
+        this.showDialog();
+        return;
+      }
+      
+      if (this.loginForm.get('name')?.invalid) {
+        this.dialogMessage = 'please enter correct name (only character)';
+        this.showDialog();
+        return;
+      }
+      
+      if (this.loginForm.get('password')?.invalid) {
+        this.dialogMessage = 'password must have 6 character (number and character)';
+        this.showDialog();
+        return;
+      }
+    }
+
+    if (this.loginForm.valid) {
+      const formValue = this.loginForm.value;
+      const newUser: Partial<User> = {
+        email: formValue.email,
+        username: formValue.username,
+        name: formValue.name,
+        password: formValue.password,
+        role: "user", 
+      };
+
+      const isDuplicateUsername = this.users.some(user => user.username === formValue.username);
+      if (isDuplicateUsername) {
+        this.dialogMessage = "have this username already";
+        this.showDialog();
+        return;
+      }
+
+      const isDuplicateEmail = this.users.some(user => user.email === formValue.email);
+      if (isDuplicateEmail) {
+        this.dialogMessage = "have this email already";
+        this.showDialog();
+        return;
+      }
+
+      this.userService.addUser(newUser as User).subscribe({
+        next: (user) => {
+          this.users.push(user);
+          this.loginForm.reset(); 
+          window.location.reload();
+        },
+        error: (error) => {
+          console.error('Error adding user:', error);
+        },
+      });
+    }
+  }
+
   
   
   reload(){

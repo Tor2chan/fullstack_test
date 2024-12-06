@@ -60,7 +60,7 @@ export class SearchRadioComponent {
     console.log("Email Value:", this.email_value);
 
    if (!this.email_value || this.email_value.trim() === '') {
-    this.dialogMessage = 'plase fill email'
+    this.dialogMessage = 'please fill email'
     this.showDialog();
       return;
     }

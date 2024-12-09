@@ -64,6 +64,13 @@ export class UserInfoChangePasswordComponent implements OnInit{
       return;
     }
 
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$/;
+    if (!passwordRegex.test(this.newPassword)) {
+      this.dialogMessage = 'Password must contain letters, numbers, and be at least 8 characters';
+      this.showDialog();
+      return;
+    }
+
     if (this.newPassword !== this.confirmPassword) {
       this.dialogMessage = 'New password and confirm password do not match'
       this.showDialog();

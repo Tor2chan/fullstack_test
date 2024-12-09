@@ -107,6 +107,7 @@ export class HomeComponent {
   
   addUser(): void {
     this.submitted = true;
+    const username = this.loginForm.get('username')?.value;
 
     if (this.loginForm.invalid) {
       if (this.loginForm.get('email')?.invalid) {
@@ -115,14 +116,26 @@ export class HomeComponent {
         return;
       }
       
+      if (!username || username.trim() === '') {
+        this.dialogMessage = 'please enter username';
+        this.showDialog();
+        return;
+      }
+
+      if (username.length < 6) {
+        this.dialogMessage = 'username must be at least 6 characters';
+        this.showDialog();
+        return;
+      }
+
       if (this.loginForm.get('name')?.invalid) {
-        this.dialogMessage = 'please enter correct name (only character)';
+        this.dialogMessage = 'please enter correct name (only text)';
         this.showDialog();
         return;
       }
       
       if (this.loginForm.get('password')?.invalid) {
-        this.dialogMessage = 'password must have 6 character (number and character)';
+        this.dialogMessage = 'password must be at least 6 characters (number and text)';
         this.showDialog();
         return;
       }

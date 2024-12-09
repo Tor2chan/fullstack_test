@@ -86,10 +86,23 @@ export class SignupComponent {
 
   addUser(): void {
     this.submitted = true;
+    const username = this.loginForm.get('username')?.value;
 
     if (this.loginForm.invalid) {
       if (this.loginForm.get('email')?.invalid) {
         this.dialogMessage = 'please enter correct email';
+        this.showDialog();
+        return;
+      }
+
+      if (!username || username.trim() === '') {
+        this.dialogMessage = 'please enter username';
+        this.showDialog();
+        return;
+      }
+
+      if (username.length < 6) {
+        this.dialogMessage = 'username must be at least 6 characters';
         this.showDialog();
         return;
       }

@@ -3,10 +3,12 @@ import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ConfirmDialogModule } from 'primeng/confirmdialog'; // Added import for Confirm Dialog
-import { ConfirmationService } from 'primeng/api'; // Added import for ConfirmationService
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 import { UserService, User } from '../../../services/user-services/user.service';
+import * as XLSX from 'xlsx';
 
+// Interface สำหรับบทบาท
 interface Role {
     role: string;
 }
@@ -21,11 +23,12 @@ interface Role {
         DropdownModule, 
         FormsModule, 
         ReactiveFormsModule,
-        ConfirmDialogModule // Added ConfirmDialogModule
+        ConfirmDialogModule
     ],
-    providers: [ConfirmationService] // Added ConfirmationService as a provider
+    providers: [ConfirmationService]
 })
 export class TableAll implements OnInit {
+    // ประกาศตัวแปรสำหรับเก็บข้อมูลผู้ใช้
     Users: User[] = [];
     selectedUser!: User;
     availableRoles: Role[] = [
@@ -33,16 +36,19 @@ export class TableAll implements OnInit {
         { role: 'user' },
     ];
 
+    // ตัวแปรสำหรับควบคุมการแสดง Modal
     showModal = false;
     currentUsername: string = '';
     currentUserId: number = 0;
 
     constructor(
         private userService: UserService,
-        private confirmationService: ConfirmationService // Inject ConfirmationService
+        private confirmationService: ConfirmationService
     ) {}
 
+    // เมื่อคอมโพเนนต์เริ่มทำงาน
     ngOnInit() {
+        // ดึงข้อมูลผู้ใช้ปัจจุบันจาก sessionStorage
         if (typeof sessionStorage !== 'undefined') {
             const sessionUser = sessionStorage.getItem('sessionUser');
             if (sessionUser) {
@@ -52,13 +58,16 @@ export class TableAll implements OnInit {
             }
         }
 
+        // โหลดรายการผู้ใช้
         this.loadUsers();
     }
 
+    // ฟังก์ชันตรวจสอบว่าควรแสดงปุ่มแก้ไขหรือไม่
     shouldShowEditButton(username: string, userId: number): boolean {
         return username !== this.currentUsername && userId !== this.currentUserId;
     }
 
+    // โหลดรายการผู้ใช้จาก Service
     loadUsers() {
         this.userService.getUsers().subscribe({
             next: (data) => {
@@ -68,11 +77,12 @@ export class TableAll implements OnInit {
                 }));
             },
             error: (error) => {
-                console.error('Error fetching users:', error);
+                console.error('เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้:', error);
             }
         });
     }
 
+    // ฟังก์ชันเปิด/ปิด Modal
     toggleModal(user?: User) {
         if (user) {
             this.selectedUser = {
@@ -83,6 +93,7 @@ export class TableAll implements OnInit {
         this.showModal = !this.showModal;
     }
 
+    // ฟังก์ชันเปลี่ยนบทบาทผู้ใช้
     onRoleChange(user: User, event: any) {
         if (!user.id) return;
     
@@ -94,14 +105,14 @@ export class TableAll implements OnInit {
             selectedRole: newRole
         };
     
-        console.log(`Changed role for user ${user.username} to ${newRole.role}`);
+        console.log(`เปลี่ยนบทบาทผู้ใช้ ${user.username} เป็น ${newRole.role}`);
     }
     
-    // Modified deleteUser method to use PrimeNG Confirmation Dialog
+    // ฟังก์ชันลบผู้ใช้
     deleteUser(userId: number) {
         this.confirmationService.confirm({
-            message: 'Are you sure about that?',
-            header: 'CONFIRM DELETE',
+            message: 'คุณแน่ใจหรือไม่ที่ต้องการลบผู้ใช้นี้?',
+            header: 'ยืนยันการลบ',
             icon: 'pi pi-info-circle',
             acceptButtonStyleClass: 'text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900',
             rejectButtonStyleClass: 'text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900',
@@ -122,6 +133,7 @@ export class TableAll implements OnInit {
         });
     }
 
+    // ฟังก์ชันบันทึกการเปลี่ยนแปลงผู้ใช้
     saveUserChanges() {
         if (this.selectedUser && this.selectedUser.id) {
             const newRole = this.selectedUser.selectedRole.role;
@@ -148,5 +160,28 @@ export class TableAll implements OnInit {
         } else {
             this.toggleModal();
         }
+    }
+
+    // ฟังก์ชันส่งออกข้อมูลผู้ใช้เป็นไฟล์ Excel
+    exportToExcel() {
+        // เตรียมข้อมูลสำหรับส่งออก
+        const exportData = this.Users.map((user, index) => ({
+            '#': index + 1,
+            'email': user.email,
+            'username': user.username,
+            'name': user.name,
+            'role': user.role
+        }));
+
+        // สร้าง Worksheet
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+        // สร้าง Workbook
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'ผู้ใช้');
+
+        // สร้างและดาวน์โหลดไฟล์ Excel
+        const fileName = `รายชื่อผู้ใช้_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(workbook, fileName);
     }
 }

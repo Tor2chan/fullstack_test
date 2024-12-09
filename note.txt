@@ -16,4 +16,4 @@ show current user login             1
 changepassword(password format)     1
 input password                      0
 
-***save picture database difference
+***difference between 2 ways save picture database 

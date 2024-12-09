@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';  
+import { PasswordModule } from 'primeng/password';
 import { CommonModule } from '@angular/common';
 import { 
   FormBuilder, 
@@ -16,7 +17,8 @@ import { UserService} from '../../services/user-services/user.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,  
-    FormsModule 
+    FormsModule,
+    PasswordModule 
   ],
   templateUrl: './signin.component.html',
   styleUrl: './signin.component.css'

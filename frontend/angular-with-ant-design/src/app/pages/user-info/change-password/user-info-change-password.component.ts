@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { PasswordModule } from 'primeng/password';
 import { CommonModule } from '@angular/common'; 
 import { FormsModule } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
@@ -12,7 +13,7 @@ import { UserChangePasswordService, User } from '../../../services/user-services
   standalone: true,
   templateUrl: './user-info-change-password.component.html',
   styleUrls: ['./user-info-change-password.component.css'],
-  imports: [FormsModule,CommonModule,BreadcrumbModule,InputTextModule,DialogModule]
+  imports: [FormsModule,CommonModule,BreadcrumbModule,InputTextModule,DialogModule,PasswordModule]
 })
 export class UserInfoChangePasswordComponent implements OnInit{
   user: User | null = null;

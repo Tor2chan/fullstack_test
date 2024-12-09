@@ -58,12 +58,15 @@
     </div>
 
     <div class="form-group">
-      <label for="password">password:</label>
-      <input 
-        type="password" 
+        <div class="mb-1">
+          <label for="password">password:</label>
+        </div>      
+
+        <p-password    
         id="password"
         formControlName="password"
-        class="form-control">
+        class="form-control"[toggleMask]="true" />
+
       <div *ngIf="submitted && loginForm.get('password')?.invalid" class="error-message">
         Enter your password
       </div>

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule, ValidatorFn} from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
+import { PasswordModule } from 'primeng/password';
 import { UserService, User } from '../../services/user-services/user.service';
 
 @Component({
@@ -12,7 +13,7 @@ import { UserService, User } from '../../services/user-services/user.service';
     CommonModule,
     ReactiveFormsModule,  
     FormsModule,
-    DialogModule 
+    DialogModule,PasswordModule
   ],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'

@@ -184,4 +184,92 @@ export class TableAll implements OnInit {
         const fileName = `รายชื่อผู้ใช้_${new Date().toISOString().split('T')[0]}.xlsx`;
         XLSX.writeFile(workbook, fileName);
     }
+
+    exportToWebSpreadsheet() {
+        // สร้าง HTML ที่แสดงข้อมูลในรูปแบบตารางคล้าย Spreadsheet
+        const spreadsheetHtml = `
+    <!DOCTYPE html>
+    <html lang="th">
+    <head>
+        <meta charset="UTF-8">
+        <title>รายชื่อผู้ใช้</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                background-color: #f4f4f4;
+            }
+            .spreadsheet-container {
+                background-color: white;
+                border: 1px solid #ddd;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                padding: 20px;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+                font-weight: bold;
+            }
+            tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+            tr:hover {
+                background-color: #f5f5f5;
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="spreadsheet-container">
+            <div class="header">
+                <h1>รายชื่อผู้ใช้</h1>
+                <p>วันที่ออก: ${new Date().toLocaleString()}</p>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>อีเมล</th>
+                        <th>ชื่อผู้ใช้</th>
+                        <th>ชื่อ</th>
+                        <th>บทบาท</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${this.Users.map((user, index) => `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${user.email}</td>
+                            <td>${user.username}</td>
+                            <td>${user.name}</td>
+                            <td>${user.role}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    </body>
+    </html>
+        `;
+    
+        // เปิดหน้าใหม่ด้วย HTML ที่สร้างขึ้น
+        const newWindow = window.open('', '_blank');
+        if (newWindow) {
+            newWindow.document.write(spreadsheetHtml);
+            newWindow.document.close();
+        } else {
+            alert('ไม่สามารถเปิดหน้าต่างใหม่ได้ กรุณาตรวจสอบการตั้งค่าบล็อกป๊อปอัป');
+        }
+    }
 }

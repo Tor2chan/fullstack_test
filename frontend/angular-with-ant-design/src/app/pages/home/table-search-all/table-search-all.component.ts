@@ -190,9 +190,8 @@ export class TableAll implements OnInit {
         const spreadsheetHtml = `
     <!DOCTYPE html>
     <html lang="th">
-    <head>
         <meta charset="UTF-8">
-        <title>รายชื่อผู้ใช้</title>
+        <title>Preview</title>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -232,18 +231,15 @@ export class TableAll implements OnInit {
     </head>
     <body>
         <div class="spreadsheet-container">
-            <div class="header">
-                <h1>รายชื่อผู้ใช้</h1>
-                <p>วันที่ออก: ${new Date().toLocaleString()}</p>
-            </div>
+        
             <table>
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>อีเมล</th>
-                        <th>ชื่อผู้ใช้</th>
-                        <th>ชื่อ</th>
-                        <th>บทบาท</th>
+                        <th>Email</th>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>Role</th>
                     </tr>
                 </thead>
                 <tbody>

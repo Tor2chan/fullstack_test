@@ -1,24 +1,23 @@
 <div class="card">
     <div style="max-width: 80%; margin: 0 auto;">
-        <!-- ปุ่มส่งออกข้อมูล -->
-        <div class="mb-3 text-right">
-            <button 
-                (click)="exportToExcel()"
-                class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-800"
-            >
-                ส่งออกเป็น Excel
-            </button>
-
-            <button 
-    (click)="exportToWebSpreadsheet()"
-    class="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-purple-500 dark:text-purple-500 dark:hover:text-white dark:hover:bg-purple-600 dark:focus:ring-purple-800"
->
-    แสดงเป็นตาราง
-</button>
-        </div>
+                <!-- ปุ่มส่งออกข้อมูล -->
+                <div class="mb-3 text-right">
+                    <button 
+                        (click)="exportToExcel()"
+                        class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-800"
+                    >
+                        ส่งออกเป็น Excel
+                    </button>
         
-        <p-confirmDialog></p-confirmDialog>
-
+                    <button 
+            (click)="exportToWebSpreadsheet()"
+            class="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-purple-500 dark:text-purple-500 dark:hover:text-white dark:hover:bg-purple-600 dark:focus:ring-purple-800"
+        >
+            แสดงเป็นตาราง
+        </button>
+                </div>
+                
+                <p-confirmDialog></p-confirmDialog>
         <p-table
             [value]="Users"
             [paginator]="true"
@@ -32,11 +31,11 @@
             <ng-template pTemplate="header" let-rowIndex="rowIndex">
                 <tr>
                     <th style="width:10%; padding-left: 50px;">#</th>
-                    <th style="width:20%">อีเมล</th>
-                    <th style="width:20%">ชื่อผู้ใช้</th>
-                    <th style="width:20%">ชื่อ</th>
-                    <th style="width:20%">บทบาท</th>
-                    <th>แก้ไข</th>
+                    <th style="width:20%">email</th>
+                    <th style="width:20%">username</th>
+                    <th style="width:20%">name</th>
+                    <th style="width:20%">role</th>
+                    <th >edit user</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
@@ -50,7 +49,7 @@
                         <button type="button" 
                                 (click)="toggleModal(user)" 
                                 class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">
-                            แก้ไข
+                            edit
                         </button>
                     </td>
                     <td *ngIf="!shouldShowEditButton(user.username, user.id)"></td>
@@ -58,45 +57,54 @@
             </ng-template>
         </p-table>
     </div>
+</div>
 
-    <!-- Modal แก้ไขผู้ใช้ -->
-    <div *ngIf="showModal" 
-         class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
-        <div class="relative w-auto my-6 mx-auto max-w-sm">
-            <div class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                <!-- หัว Modal -->
-                <div class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
-                    <h3 class="text-xl font-semibold">
-                        แก้ไขผู้ใช้
-                    </h3>
-                </div>
+<!-- Modal part remains the same -->
+<div *ngIf="showModal" 
+     class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
+    <div class="relative w-auto my-6 mx-auto max-w-sm">
+        <div class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            <!-- Modal Header -->
+            <div class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
+                <h3 class="text-xl font-semibold">
+                    edit user
+                </h3>
+            </div>
 
-                <!-- เนื้อหา Modal -->
-                <div class="relative py-4 flex-auto">
-                    <div class="grid grid-cols-2 mt-3 mb-3">
-                        <div class="p-2 rounded flex items-center justify-center h-20 w-40">                            
-                            <p-dropdown 
-                            [options]="availableRoles" 
-                            [(ngModel)]="selectedUser.selectedRole" 
-                            optionLabel="role"
-                            (onChange)="onRoleChange(selectedUser, $event)">
-                        </p-dropdown>
-                        </div>
-                        <div class="p-2 rounded flex items-center justify-center h-20">
-                            <button type="button" 
-                                    (click)="deleteUser(selectedUser.id)"
-                                    class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mr-3 px-3 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
-                                ลบผู้ใช้
-                            </button>
-                        </div>
+            <!-- Modal Body -->
+            <div class="relative py-4 flex-auto">
+                <div class="grid grid-cols-2 mt-3 mb-3">
+                    <div class="p-2 rounded flex items-center justify-center h-20 w-40">                            
+                        <p-dropdown 
+                        [options]="availableRoles" 
+                        [(ngModel)]="selectedUser.selectedRole" 
+                        optionLabel="role"
+                        (onChange)="onRoleChange(selectedUser, $event)">
+                    </p-dropdown>
+                    </div>
+                    <div class="p-2 rounded flex items-center justify-center h-20">
+                        <button type="button" 
+                                (click)="deleteUser(selectedUser.id)"
+                                class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mr-3 px-3 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
+                            delete user
+                        </button>
                     </div>
                 </div>
+            </div>
 
-                <!-- ส่วนท้าย Modal -->
-                <div class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
-                    <button type="button" 
-                            (click)="toggleModal()" 
-                            class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
-                        ปิด
-                    </button>
-                    
+            <!-- Modal Footer -->
+            <div class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                <button type="button" 
+                        (click)="toggleModal()" 
+                        class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
+                    close
+                </button>
+                <button type="button" 
+                        (click)="saveUserChanges()" 
+                        class="text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800">
+                    save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

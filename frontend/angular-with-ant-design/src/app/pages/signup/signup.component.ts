@@ -36,7 +36,10 @@ export class SignupComponent {
         Validators.required, 
         this.emailValidator()
       ]],
-      username: ['', Validators.required],
+      username: ['', [
+        Validators.required, 
+        Validators.minLength(6),
+      ]],      
       name: ['', [
         Validators.required, 
         this.nameValidator()
@@ -84,78 +87,71 @@ export class SignupComponent {
     this.submitted = true;
   }
 
-
   addUser(): void {
     this.submitted = true;
-    const username = this.loginForm.get('username')?.value;
+
+    // Trim ค่า username
+    const usernameControl = this.loginForm.get('username');
+    if (usernameControl?.value) {
+      usernameControl.setValue(usernameControl.value.trim());
+    }
 
     if (this.loginForm.invalid) {
-      if (this.loginForm.get('email')?.invalid) {
-        this.dialogMessage = 'please enter correct email';
-        this.showDialog();
-        return;
+      if (usernameControl?.hasError('required')) {
+        this.dialogMessage = 'Please enter username';
+      } else if (usernameControl?.hasError('minlength')) {
+        this.dialogMessage = 'Username must be at least 6 characters';
+      } else if (usernameControl?.hasError('pattern')) {
+        this.dialogMessage = 'Username must contain only letters';
+      } else if (this.loginForm.get('email')?.hasError('invalidEmail')) {
+        this.dialogMessage = 'Please enter a correct email';
+      } else if (this.loginForm.get('name')?.hasError('invalidName')) {
+        this.dialogMessage = 'Please enter a correct name (only text)';
+      } else if (this.loginForm.get('password')?.hasError('invalidPassword')) {
+        this.dialogMessage = 'Password must contain at least one letter and one number';
       }
-
-      if (!username || username.trim() === '') {
-        this.dialogMessage = 'please enter username';
-        this.showDialog();
-        return;
-      }
-
-      if (username.length < 6) {
-        this.dialogMessage = 'username must be at least 6 characters';
-        this.showDialog();
-        return;
-      }
-      
-      if (this.loginForm.get('name')?.invalid) {
-        this.dialogMessage = 'please enter correct name (only character)';
-        this.showDialog();
-        return;
-      }
-      
-      if (this.loginForm.get('password')?.invalid) {
-        this.dialogMessage = 'password must have 6 character (number and character)';
-        this.showDialog();
-        return;
-      }
+      this.showDialog();
+      return;
     }
 
-    if (this.loginForm.valid) {
-      const formValue = this.loginForm.value;
-      const newUser: Partial<User> = {
-        email: formValue.email,
-        username: formValue.username,
-        name: formValue.name,
-        password: formValue.password,
-        role: "user", 
-      };
+    const formValue = this.loginForm.value;
+    const newUser: Partial<User> = {
+      email: formValue.email,
+      username: formValue.username,
+      name: formValue.name,
+      password: formValue.password,
+      role: 'user', 
+    };
 
-      const isDuplicateUsername = this.users.some(user => user.username === formValue.username);
-      if (isDuplicateUsername) {
-        this.dialogMessage = "have this username already";
-        this.showDialog();
-        return;
-      }
-
-      const isDuplicateEmail = this.users.some(user => user.email === formValue.email);
-      if (isDuplicateEmail) {
-        this.dialogMessage = "have this email already";
-        this.showDialog();
-        return;
-      }
-
-      this.userService.addUser(newUser as User).subscribe({
-        next: (user) => {
-          this.users.push(user);
-          this.loginForm.reset(); 
-          this.home_redirect();
-        },
-        error: (error) => {
-          console.error('Error adding user:', error);
-        },
-      });
+    const isDuplicateUsername = this.users.some(user => user.username === formValue.username);
+    if (isDuplicateUsername) {
+      this.dialogMessage = 'This username already exists';
+      this.showDialog();
+      return;
     }
+
+    const isDuplicateEmail = this.users.some(user => user.email === formValue.email);
+    if (isDuplicateEmail) {
+      this.dialogMessage = 'This email already exists';
+      this.showDialog();
+      return;
+    }
+
+    this.userService.addUser(newUser as User).subscribe({
+      next: (user) => {
+        this.users.push(user);
+        this.loginForm.reset(); 
+        this.submitted = false;
+        // this.dialogMessage = 'User added successfully';
+        // this.showDialog();
+        this.home_redirect();
+      },
+      error: (error) => {
+        console.error('Error adding user:', error);
+        this.dialogMessage = 'Error occurred while adding user';
+        this.showDialog();
+      },
+    });
   }
 
   showDialog(){

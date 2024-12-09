@@ -5,7 +5,7 @@ add row order             --->  1
 show table before add user--->  1
 format email, pass        --->  1
 change pass alert         --->  1
-add (username) min6       --->  0
+add (username) min6       --->  1
 export table to excel(APACHE)     --->  0
 add more component (ex. calendar, check box, radio)
 
@@ -14,5 +14,6 @@ change name (name format character) 1
 change alert to dialog              1
 show current user login             1
 changepassword(password format)     1
-input password        
-***              0
+input password                      0
+
+***save picture database difference

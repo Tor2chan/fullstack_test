@@ -60,4 +60,5 @@ export class UserService {
     return this.http.get(`${this.baseUrl}/api/users/${userId}/profile-picture`);
     }
     
+    
 }

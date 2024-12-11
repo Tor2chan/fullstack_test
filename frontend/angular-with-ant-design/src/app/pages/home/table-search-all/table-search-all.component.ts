@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { UserService, User } from '../../../services/user-services/user.service';
+import { GoogleSheetsService } from '../../../services/google-sheets.service';
 import * as XLSX from 'xlsx';
 
 interface Role {
@@ -16,13 +17,13 @@ interface Role {
     selector: 'search-all',
     templateUrl: './table-search-all.component.html',
     standalone: true,
-    imports: [
-        TableModule, 
+    imports: [TableModule,
         CommonModule, 
         DropdownModule, 
         FormsModule, 
         ReactiveFormsModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        
     ],
     providers: [ConfirmationService]
 })
@@ -40,7 +41,8 @@ export class TableAll implements OnInit {
 
     constructor(
         private userService: UserService,
-        private confirmationService: ConfirmationService
+        private confirmationService: ConfirmationService,
+        private googleSheetsService: GoogleSheetsService,
     ) {}
 
 
@@ -230,4 +232,20 @@ export class TableAll implements OnInit {
             alert('cant open new tab!');
         }
     }
+
+    exportToGoogleSheets() {
+        const exportData: User[] = this.Users;
+    
+        this.googleSheetsService.exportDataToGoogleSheets(exportData).subscribe({
+            next: (response: any) => {
+                const url = `https://docs.google.com/spreadsheets/d/${response.spreadsheetId}`;
+                window.open(url, '_blank');
+            },
+            error: error => {
+                console.error('Google Sheets export error:', error);
+            }
+        });
+    }
+    
+      
 }    

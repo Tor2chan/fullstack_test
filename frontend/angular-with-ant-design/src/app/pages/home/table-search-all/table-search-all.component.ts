@@ -8,7 +8,6 @@ import { ConfirmationService } from 'primeng/api';
 import { UserService, User } from '../../../services/user-services/user.service';
 import * as XLSX from 'xlsx';
 
-// Interface สำหรับบทบาท
 interface Role {
     role: string;
 }
@@ -28,7 +27,6 @@ interface Role {
     providers: [ConfirmationService]
 })
 export class TableAll implements OnInit {
-    // ประกาศตัวแปรสำหรับเก็บข้อมูลผู้ใช้
     Users: User[] = [];
     selectedUser!: User;
     availableRoles: Role[] = [
@@ -36,7 +34,6 @@ export class TableAll implements OnInit {
         { role: 'user' },
     ];
 
-    // ตัวแปรสำหรับควบคุมการแสดง Modal
     showModal = false;
     currentUsername: string = '';
     currentUserId: number = 0;
@@ -46,9 +43,9 @@ export class TableAll implements OnInit {
         private confirmationService: ConfirmationService
     ) {}
 
-    // เมื่อคอมโพเนนต์เริ่มทำงาน
+
     ngOnInit() {
-        // ดึงข้อมูลผู้ใช้ปัจจุบันจาก sessionStorage
+        //  sessionStorage
         if (typeof sessionStorage !== 'undefined') {
             const sessionUser = sessionStorage.getItem('sessionUser');
             if (sessionUser) {
@@ -58,16 +55,16 @@ export class TableAll implements OnInit {
             }
         }
 
-        // โหลดรายการผู้ใช้
+        // 
         this.loadUsers();
     }
 
-    // ฟังก์ชันตรวจสอบว่าควรแสดงปุ่มแก้ไขหรือไม่
+    // show edit button
     shouldShowEditButton(username: string, userId: number): boolean {
         return username !== this.currentUsername && userId !== this.currentUserId;
     }
 
-    // โหลดรายการผู้ใช้จาก Service
+    // load Service
     loadUsers() {
         this.userService.getUsers().subscribe({
             next: (data) => {
@@ -77,12 +74,12 @@ export class TableAll implements OnInit {
                 }));
             },
             error: (error) => {
-                console.error('เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้:', error);
+                console.error('fetch user data error:', error);
             }
         });
     }
 
-    // ฟังก์ชันเปิด/ปิด Modal
+    // Modal
     toggleModal(user?: User) {
         if (user) {
             this.selectedUser = {
@@ -93,7 +90,7 @@ export class TableAll implements OnInit {
         this.showModal = !this.showModal;
     }
 
-    // ฟังก์ชันเปลี่ยนบทบาทผู้ใช้
+    // rolechange
     onRoleChange(user: User, event: any) {
         if (!user.id) return;
     
@@ -105,14 +102,14 @@ export class TableAll implements OnInit {
             selectedRole: newRole
         };
     
-        console.log(`เปลี่ยนบทบาทผู้ใช้ ${user.username} เป็น ${newRole.role}`);
+        console.log(`change role ${user.username} to ${newRole.role}`);
     }
     
-    // ฟังก์ชันลบผู้ใช้
+    // delete
     deleteUser(userId: number) {
         this.confirmationService.confirm({
-            message: 'คุณแน่ใจหรือไม่ที่ต้องการลบผู้ใช้นี้?',
-            header: 'ยืนยันการลบ',
+            message: 'are you sure to delete this user?',
+            header: 'Delete Confirm',
             icon: 'pi pi-info-circle',
             acceptButtonStyleClass: 'text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900',
             rejectButtonStyleClass: 'text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900',
@@ -126,14 +123,14 @@ export class TableAll implements OnInit {
                         window.location.reload();
                     },
                     error: (error) => {
-                        console.error('เกิดข้อผิดพลาดในการลบผู้ใช้:', error);
+                        console.error('delete user error:', error);
                     }
                 });
             }
         });
     }
 
-    // ฟังก์ชันบันทึกการเปลี่ยนแปลงผู้ใช้
+    // save
     saveUserChanges() {
         if (this.selectedUser && this.selectedUser.id) {
             const newRole = this.selectedUser.selectedRole.role;
@@ -148,13 +145,13 @@ export class TableAll implements OnInit {
                             selectedRole: { role: newRole }
                         };
                     }
-                    console.log(`อัปเดตบทบาทของผู้ใช้ ${this.selectedUser.username} สำเร็จ`);
+                    console.log(`update role ${this.selectedUser.username} success`);
                     this.toggleModal();
                     this.loadUsers();
                 },
                 error: (error) => {
-                    console.error('เกิดข้อผิดพลาดในการอัปเดตบทบาทผู้ใช้:', error);
-                    alert('ไม่สามารถอัปเดตบทบาทผู้ใช้ได้ กรุณาลองอีกครั้ง');
+                    console.error('failed to update role:', error);
+                    alert('cant update role please try again');
                 }
             });
         } else {
@@ -162,7 +159,7 @@ export class TableAll implements OnInit {
         }
     }
 
-    // ฟังก์ชันส่งออกข้อมูลผู้ใช้เป็นไฟล์ Excel
+    // export  Excel
     exportToExcel() {
         // เตรียมข้อมูลสำหรับส่งออก
         const exportData = this.Users.map((user, index) => ({
@@ -178,15 +175,16 @@ export class TableAll implements OnInit {
 
         // สร้าง Workbook
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'ผู้ใช้');
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Users');
 
         // สร้างและดาวน์โหลดไฟล์ Excel
-        const fileName = `รายชื่อผู้ใช้_${new Date().toISOString().split('T')[0]}.xlsx`;
+        const fileName = `Users_${new Date().toISOString().split('T')[0]}.xlsx`;
         XLSX.writeFile(workbook, fileName);
     }
 
+
+    // Preview
     exportToWebSpreadsheet() {
-        // สร้าง HTML ที่แสดงข้อมูลในรูปแบบตารางคล้าย Spreadsheet
         const spreadsheetHtml = `
     <!DOCTYPE html>
     <html lang="th">
@@ -258,14 +256,14 @@ export class TableAll implements OnInit {
     </body>
     </html>
         `;
-    
-        // เปิดหน้าใหม่ด้วย HTML ที่สร้างขึ้น
+        
+        // open window
         const newWindow = window.open('', '_blank');
         if (newWindow) {
             newWindow.document.write(spreadsheetHtml);
             newWindow.document.close();
         } else {
-            alert('ไม่สามารถเปิดหน้าต่างใหม่ได้ กรุณาตรวจสอบการตั้งค่าบล็อกป๊อปอัป');
+            alert('cant open new tab!');
         }
     }
 }

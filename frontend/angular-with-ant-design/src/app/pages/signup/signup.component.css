@@ -1,5 +1,7 @@
 ::ng-deep .p-password  input{
   width: 100%;  
+  font: none;
+  font-size: 14px;
 }
 
 ::ng-deep .p-password input:focus {

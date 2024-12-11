@@ -9,12 +9,13 @@ import { TableRole } from './table-search-role/table-search-role';
 import { InputTextModule } from 'primeng/inputtext';
 import { DialogModule } from 'primeng/dialog';
 import { Router } from '@angular/router';
+import { PasswordModule } from 'primeng/password';
 import { UserService, User } from '../../services/user-services/user.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, CommonModule, RadioButtonModule, TableEmail, TableAll, SearchRadioComponent, InputTextModule, DialogModule, TableRole, ReactiveFormsModule],
+  imports: [PasswordModule,FormsModule, CommonModule, RadioButtonModule, TableEmail, TableAll, SearchRadioComponent, InputTextModule, DialogModule, TableRole, ReactiveFormsModule],
   templateUrl: `./home.component.html`,
   styleUrl: './home.component.css'
 })
@@ -42,7 +43,7 @@ export class HomeComponent {
       username: ['', [
         Validators.required, 
         Validators.minLength(6),
-        Validators.pattern(/^[a-zA-Z]+$/) // ต้องเป็นตัวอักษรเท่านั้น
+        Validators.pattern(/^[a-zA-Z]+$/) 
       ]],
       name: ['', [
         Validators.required, 
@@ -106,11 +107,10 @@ export class HomeComponent {
   onSubmit() {
     this.submitted = true;
   }
-
+  
   addUser(): void {
     this.submitted = true;
 
-    // Trim ค่า username
     const usernameControl = this.loginForm.get('username');
     if (usernameControl?.value) {
       usernameControl.setValue(usernameControl.value.trim());

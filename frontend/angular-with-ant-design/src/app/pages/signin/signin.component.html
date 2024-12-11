@@ -10,7 +10,7 @@
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <div class="title-center"><h2>Sign in</h2></div>
           
-          <div class="form-group">
+          <div class="form-group ">
             <label for="username">Username:</label>
             <input 
             type="text" 
@@ -25,14 +25,14 @@
             
           </div>
   
-          <div class="form-group">
-              <div>
+          <div class="form-group"> 
+              <div class="mb-2">
                 <label for="password">Password:</label>
               </div>
               <p-password    
               id="password"
               formControlName="password"
-              class="form-control" [toggleMask]="true" />
+              class="form-control" [toggleMask]="true" [feedback]="false" />
             <div *ngIf="submitted && loginForm.get('password')?.invalid" class="error-message">
               Enter your password
             </div>

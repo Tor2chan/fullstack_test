@@ -56,18 +56,15 @@
               type="text" 
               id="name"
               formControlName="name"
-              class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-focus:ring-blue-500"
               placeholder="Enter name"
             />
 
             <!-- Row 4: Password -->
-            <label for="password" class="text-gray-700 font-medium self-center">Password</label>
-            <input 
-              type="password" 
-              id="password" 
-              formControlName="password"
-              class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter password"
+            <label for="password" class="text-gray-700  self-center">Password</label>
+            <p-password 
+            id="password" placeholder="Enter password" [toggleMask]="true"
+ 
             />
           </div>
 

@@ -6,7 +6,7 @@ show table before add user--->  1
 format email, pass        --->  1
 change pass alert         --->  1
 add (username) min6       --->  1
-export table to excel     --->  0
+export table to excel     --->  1
 add more component (ex. calendar, check box, radio) 0
 
 signup (name format character)      1

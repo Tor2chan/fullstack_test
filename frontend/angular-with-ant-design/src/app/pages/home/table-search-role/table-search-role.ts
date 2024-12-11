@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog'; // Added import for Confirm Dialog
 import { ConfirmationService } from 'primeng/api'; // Added import for ConfirmationService
 import { UserService, User } from '../../../services/user-services/user.service';
+import * as XLSX from 'xlsx';
 
 interface Role {
   role: string;
@@ -165,4 +166,71 @@ export class TableRole {
       this.toggleModal();
     }
   }
+
+
+  // export Excel
+  exportToExcel() {
+    const exportData = this.filteredUsers.map((user, index) => ({
+        '#': index + 1,
+        'Email': user.email,
+        'Username': user.username,
+        'Name': user.name,
+        'Role': user.role
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Role_' + this.filterRole());
+
+    const fileName = `Role_${this.filterRole()}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
+}
+
+exportToWebSpreadsheet() {
+  const spreadsheetHtml = `
+  <html>
+  <head>
+      <title>Preview</title>
+      <link href="styles.css" rel="stylesheet">
+  </head>
+  <body class="bg-gray-100 p-5">
+      <div class="bg-white border border-gray-300 shadow-md p-5 rounded-lg">
+          <h1 class="text-xl font-bold text-center mb-5">Role (${this.filterRole()})</h1>
+          <table class="table-auto w-full border-collapse border border-gray-300">
+              <thead>
+                  <tr class="bg-gray-200">
+                      <th class="border border-gray-300 px-4 py-2 text-left">#</th>
+                      <th class="border border-gray-300 px-4 py-2 text-left">Email</th>
+                      <th class="border border-gray-300 px-4 py-2 text-left">Username</th>
+                      <th class="border border-gray-300 px-4 py-2 text-left">Name</th>
+                      <th class="border border-gray-300 px-4 py-2 text-left">Role</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  ${this.filteredUsers.map((user, index) => `
+                      <tr class="${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-200">
+                          <td class="border border-gray-300 px-4 py-2">${index + 1}</td>
+                          <td class="border border-gray-300 px-4 py-2">${user.email}</td>
+                          <td class="border border-gray-300 px-4 py-2">${user.username}</td>
+                          <td class="border border-gray-300 px-4 py-2">${user.name}</td>
+                          <td class="border border-gray-300 px-4 py-2">${user.role}</td>
+                      </tr>
+                  `).join('')}
+              </tbody>
+          </table>
+      </div>
+  </body>
+  </html>
+  `;
+
+  const newWindow = window.open('', '_blank');
+  if (newWindow) {
+      newWindow.document.write(spreadsheetHtml);
+      newWindow.document.close();
+  } else {
+      alert('Cannot open new tab!');
+  }
+}
+
+
 }

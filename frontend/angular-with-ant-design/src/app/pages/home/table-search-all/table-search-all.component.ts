@@ -161,7 +161,7 @@ export class TableAll implements OnInit {
 
     // export  Excel
     exportToExcel() {
-        // เตรียมข้อมูลสำหรับส่งออก
+        // data prep
         const exportData = this.Users.map((user, index) => ({
             '#': index + 1,
             'email': user.email,
@@ -170,15 +170,15 @@ export class TableAll implements OnInit {
             'role': user.role
         }));
 
-        // สร้าง Worksheet
+        // Worksheet
         const worksheet = XLSX.utils.json_to_sheet(exportData);
 
-        // สร้าง Workbook
+        // Workbook
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Users');
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'AllUsers');
 
-        // สร้างและดาวน์โหลดไฟล์ Excel
-        const fileName = `Users_${new Date().toISOString().split('T')[0]}.xlsx`;
+        // download Excel
+        const fileName = `AllUsers_${new Date().toISOString().split('T')[0]}.xlsx`;
         XLSX.writeFile(workbook, fileName);
     }
 
@@ -186,78 +186,42 @@ export class TableAll implements OnInit {
     // Preview
     exportToWebSpreadsheet() {
         const spreadsheetHtml = `
-    <!DOCTYPE html>
-    <html lang="th">
-        <meta charset="UTF-8">
-        <title>Preview</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                margin: 20px;
-                background-color: #f4f4f4;
-            }
-            .spreadsheet-container {
-                background-color: white;
-                border: 1px solid #ddd;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-                padding: 20px;
-            }
-            table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-            th, td {
-                border: 1px solid #ddd;
-                padding: 10px;
-                text-align: left;
-            }
-            th {
-                background-color: #f2f2f2;
-                font-weight: bold;
-            }
-            tr:nth-child(even) {
-                background-color: #f9f9f9;
-            }
-            tr:hover {
-                background-color: #f5f5f5;
-            }
-            .header {
-                text-align: center;
-                margin-bottom: 20px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="spreadsheet-container">
-        
-            <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Email</th>
-                        <th>Username</th>
-                        <th>Name</th>
-                        <th>Role</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${this.Users.map((user, index) => `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${user.email}</td>
-                            <td>${user.username}</td>
-                            <td>${user.name}</td>
-                            <td>${user.role}</td>
+        <html>
+        <head>
+            <title>Preview</title>
+            <link href="styles.css" rel="stylesheet">
+        </head>
+        <body class="bg-gray-100 p-5">
+            <div class="bg-white border border-gray-300 shadow-md p-5 rounded-lg">
+                <h1 class="text-xl font-bold text-center mb-5">All Users</h1>
+                <table class="table-auto w-full border-collapse border border-gray-300">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="border border-gray-300 px-4 py-2 text-left">#</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Email</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Username</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Name</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Role</th>
                         </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-        </div>
-    </body>
-    </html>
+                    </thead>
+                    <tbody>
+                        ${this.Users.map((user, index) => `
+                            <tr class="${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-200">
+                                <td class="border border-gray-300 px-4 py-2">${index + 1}</td>
+                                <td class="border border-gray-300 px-4 py-2">${user.email}</td>
+                                <td class="border border-gray-300 px-4 py-2">${user.username}</td>
+                                <td class="border border-gray-300 px-4 py-2">${user.name}</td>
+                                <td class="border border-gray-300 px-4 py-2">${user.role}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </body>
+        </html>
         `;
-        
-        // open window
+    
+        // open window tab
         const newWindow = window.open('', '_blank');
         if (newWindow) {
             newWindow.document.write(spreadsheetHtml);
@@ -266,4 +230,4 @@ export class TableAll implements OnInit {
             alert('cant open new tab!');
         }
     }
-}
+}    

@@ -8,6 +8,7 @@ import { ConfirmationService } from 'primeng/api'; // Added import for Confirmat
 import { UserService, User } from '../../../services/user-services/user.service';
 import * as XLSX from 'xlsx';
 import { GoogleSheetsService } from '../../../services/google-sheets.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 interface Role {
   role: string;
@@ -17,7 +18,7 @@ interface Role {
   selector: 'app-table-role',
   templateUrl: './table-search-role.html',
   standalone: true,
-  imports: [TableModule, CommonModule, DropdownModule, FormsModule, ConfirmDialogModule],
+  imports: [TableModule, ProgressSpinnerModule, CommonModule, DropdownModule, FormsModule, ConfirmDialogModule],
   providers: [ConfirmationService] 
 })
 export class TableRole {
@@ -35,6 +36,7 @@ export class TableRole {
   showModal = false;
   currentUsername: string = '';
   currentUserId: number = 0;
+  loading = false;
 
   constructor(private userService:  UserService, private confirmationService: ConfirmationService
               ,private googleSheetsService: GoogleSheetsService
@@ -236,15 +238,18 @@ exportToWebSpreadsheet() {
 }
 
 exportToGoogleSheets() {
+  this.loading = true;
   const exportData: User[] = this.filteredUsers;
 
   this.googleSheetsService.exportDataToGoogleSheets(exportData).subscribe({
       next: (response: any) => {
           const url = `https://docs.google.com/spreadsheets/d/${response.spreadsheetId}`;
           window.open(url, '_blank');
+          this.loading = false;
       },
       error: error => {
           console.error('Google Sheets export error:', error);
+          this.loading = false;
       }
   });
 }

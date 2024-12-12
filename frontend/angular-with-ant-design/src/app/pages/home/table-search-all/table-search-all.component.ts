@@ -8,6 +8,7 @@ import { ConfirmationService } from 'primeng/api';
 import { UserService, User } from '../../../services/user-services/user.service';
 import { GoogleSheetsService } from '../../../services/google-sheets.service';
 import * as XLSX from 'xlsx';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 interface Role {
     role: string;
@@ -18,7 +19,7 @@ interface Role {
     templateUrl: './table-search-all.component.html',
     standalone: true,
     imports: [TableModule,
-        CommonModule, 
+        CommonModule, ProgressSpinnerModule,
         DropdownModule, 
         FormsModule, 
         ReactiveFormsModule,
@@ -38,6 +39,7 @@ export class TableAll implements OnInit {
     showModal = false;
     currentUsername: string = '';
     currentUserId: number = 0;
+    loading = false;
 
     constructor(
         private userService: UserService,
@@ -234,15 +236,18 @@ export class TableAll implements OnInit {
     }
 
     exportToGoogleSheets() {
+        this.loading = true;
         const exportData: User[] = this.Users;
     
         this.googleSheetsService.exportDataToGoogleSheets(exportData).subscribe({
             next: (response: any) => {
                 const url = `https://docs.google.com/spreadsheets/d/${response.spreadsheetId}`;
                 window.open(url, '_blank');
+                this.loading = false;
             },
             error: error => {
                 console.error('Google Sheets export error:', error);
+                this.loading = false;
             }
         });
     }

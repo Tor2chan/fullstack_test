@@ -7,6 +7,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog'; // Added import for
 import { ConfirmationService } from 'primeng/api'; // Added import for ConfirmationService
 import { UserService, User } from '../../../services/user-services/user.service';
 import * as XLSX from 'xlsx';
+import { GoogleSheetsService } from '../../../services/google-sheets.service';
 
 interface Role {
   role: string;
@@ -35,7 +36,9 @@ export class TableRole {
   currentUsername: string = '';
   currentUserId: number = 0;
 
-  constructor(private userService:  UserService, private confirmationService: ConfirmationService) {
+  constructor(private userService:  UserService, private confirmationService: ConfirmationService
+              ,private googleSheetsService: GoogleSheetsService
+  ) {
     effect(() => {
       console.log('fileter Role:', this.filterRole());
       this.applyFilter();
@@ -232,5 +235,18 @@ exportToWebSpreadsheet() {
   }
 }
 
+exportToGoogleSheets() {
+  const exportData: User[] = this.filteredUsers;
+
+  this.googleSheetsService.exportDataToGoogleSheets(exportData).subscribe({
+      next: (response: any) => {
+          const url = `https://docs.google.com/spreadsheets/d/${response.spreadsheetId}`;
+          window.open(url, '_blank');
+      },
+      error: error => {
+          console.error('Google Sheets export error:', error);
+      }
+  });
+}
 
 }

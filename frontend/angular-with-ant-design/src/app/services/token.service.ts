@@ -2,14 +2,14 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
 export class TokenService {
-  private clientId = '407356628967-rqphqhh2h3gcsomk7r2l4cetn55lnj2o.apps.googleusercontent.com';
-  private clientSecret = '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';
-  private refreshToken = '1//04HzOQY6ibxOdCgYIARAAGAQSNgF-L9Ir9u-vee6w1C1Fszds2LHSx5XaNUlw48Hxxcvbn2d5yc_7JaIp3ezbsFntU0pgYSYCZg';
+  private clientId = environment.CLIENT_ID;
+  private clientSecret = environment.CLIENT_SECRET;
+  private refreshToken = environment.REFRESH_TOKEN;
   public currentAccessToken = ''; // เก็บ Access Token ที่ได้มา
 
   constructor(private http: HttpClient) {}

@@ -71,7 +71,8 @@ export class SigninComponent {
               role: user.role,
               id: user.id,
               phone: user.phone,
-              b_date: user.b_date
+              b_date: user.b_date,
+              gender: user.gender
             }));
   
             // route and refresh

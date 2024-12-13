@@ -39,7 +39,7 @@ export class UserInfoChangeNameComponent implements OnInit {
 
   gender: any[] = [
     { name: 'male', key: 'M' },
-    { name: 'famale', key: 'F' },
+    { name: 'female', key: 'F' },
     { name: 'other', key: 'O' },
 ];
 
@@ -58,12 +58,12 @@ export class UserInfoChangeNameComponent implements OnInit {
 
   ngOnInit() {
     
-    
-    this.items = [
+      this.items = [
       { label: 'info', routerLink: 'user-info'},
       { label: 'change-name'}
     ];
 
+    // session
     if (typeof sessionStorage !== 'undefined') {
       const sessionUser = sessionStorage.getItem('sessionUser');
       if (sessionUser) {
@@ -80,6 +80,9 @@ export class UserInfoChangeNameComponent implements OnInit {
         this.router.navigate(['signin']);
       }
     }
+
+    // set gender
+    this.selectedGender = this.gender.find(g => g.name.toLowerCase() === this.user?.gender?.toLowerCase()) ?? null;  
   }
 
   onDateSelect(event: Date): void {
@@ -94,7 +97,7 @@ export class UserInfoChangeNameComponent implements OnInit {
   }
   
   
-  // ฟังก์ชันตรวจสอบชื่อ
+  // check name
   nameValidator(): ValidatorFn {
     return (control: AbstractControl): {[key: string]: any} | null => {
       const nameRegex = /^[ก-๏a-zA-Z\s]+$/; 
@@ -114,34 +117,30 @@ export class UserInfoChangeNameComponent implements OnInit {
   }
 
   updateName() {
-    // ตรวจสอบชื่อว่างเปล่า
+    // check
     if (!this.user?.name.trim()) {
       this.dialogMessage = 'please enter new name';
       this.showDialog();
       return;
     }
   
-    // ตรวจสอบความถูกต้องของชื่อโดยตรง
     const nameRegex = /^[ก-๏a-zA-Z\s]+$/;
     const isValidName = nameRegex.test(this.user.name) && 
                         this.user.name.trim().length >= 2 && 
                         this.user.name.trim().length <= 50;
     
     if (!isValidName) {
-      // ชื่อไม่ถูกต้อง
       this.dialogMessage = 'please enter correct name (only character)';
       this.showDialog();
       return;
     }
-
-    // ตรวจสอบว่ามี User และ ID
     if (this.user && this.user.id !== undefined) {  
       this.userService.updateName(this.user.id, this.user.name).subscribe({
         next: (updatedUser: User) => {
-          // ระบุประเภทข้อมูลให้ชัดเจน
+          
           if (typeof sessionStorage !== 'undefined') {
             sessionStorage.setItem('sessionUser', JSON.stringify(updatedUser));
-            this.user = updatedUser; // ใช้ข้อมูลที่ได้จาก backend โดยตรง
+            this.user = updatedUser; 
           } 
           
           console.log("change name success")
@@ -159,29 +158,26 @@ export class UserInfoChangeNameComponent implements OnInit {
   }
 
   updatePhone() {
-    // ตรวจสอบชื่อว่างเปล่า
     if (!this.user?.phone.trim()) {
       this.dialogMessage = 'please enter new phone';
       this.showDialog();
       return;
     }
-  
-     // ตรวจสอบความถูกต้องของเบอร์โทรศัพท์
+    
+    //  check phone
      const phoneRegex = /^[0-9]{10}$/;
      const isValidPhone = phoneRegex.test(this.user.phone.trim());
      
      if (!isValidPhone) {
-       // เบอร์โทรศัพท์ไม่ถูกต้อง
-       this.dialogMessage = 'กรุณาป้อนเบอร์โทรศัพท์ให้ถูกต้อง (10 หลัก)';
+       this.dialogMessage = 'please enter number (10)';
        this.showDialog();
        return;
      }
 
-    // ตรวจสอบว่ามี User และ ID
+    // check user
     if (this.user && this.user.id !== undefined) {  
       this.userService.updatePhone(this.user.id, this.user.phone).subscribe({
         next: (updatedUser: User) => {
-          // ระบุประเภทข้อมูลให้ชัดเจน
           if (typeof sessionStorage !== 'undefined') {
             sessionStorage.setItem('sessionUser', JSON.stringify(updatedUser));
             this.user = updatedUser; // ใช้ข้อมูลที่ได้จาก backend โดยตรง
@@ -203,16 +199,16 @@ export class UserInfoChangeNameComponent implements OnInit {
 
   updateB_date() {
     if (this.user && this.user.id !== undefined) {  
-      // ตรวจสอบว่า `formattedDate` มีค่า
+      // check formattedDate
       if (this.formattedDate) {
-        this.user.b_date = this.formattedDate; // ใช้ค่าที่ถูกจัดรูปแบบแล้ว
+        this.user.b_date = this.formattedDate; 
       }
   
       this.userService.updateB_date(this.user.id, this.user.b_date).subscribe({
         next: (updatedUser: User) => {
           if (typeof sessionStorage !== 'undefined') {
             sessionStorage.setItem('sessionUser', JSON.stringify(updatedUser));
-            this.user = updatedUser; // อัปเดตข้อมูลผู้ใช้
+            this.user = updatedUser; 
           } 
           console.log("Change birthday success");
         },

@@ -7,6 +7,9 @@ import { FormsModule, ValidatorFn, AbstractControl, Validators, FormBuilder, For
 import { UserChangeNameService, User } from '../../../services/user-services/user-change-name.service';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
+import { CalendarModule } from 'primeng/calendar';
+import { RadioButtonModule } from 'primeng/radiobutton';
+
 
 @Component({
   selector: 'app-user-info',
@@ -16,7 +19,9 @@ import { ButtonModule } from 'primeng/button';
     BreadcrumbModule,
     FormsModule,
     DialogModule,
-    ButtonModule
+    ButtonModule,
+    CalendarModule,
+    RadioButtonModule
   ],       
   templateUrl: './user-info-change-name.component.html',
   styleUrl: './user-info-change-name.component.css'
@@ -29,6 +34,8 @@ export class UserInfoChangeNameComponent implements OnInit {
   isNameChanged: boolean = false;
   visible: boolean = false;
   dialogMessage: string = '';
+  formattedDate: string | null = null; 
+  gender!: string;
 
   constructor(
     private fb: FormBuilder, 
@@ -67,13 +74,25 @@ export class UserInfoChangeNameComponent implements OnInit {
     }
   }
 
+  onDateSelect(event: Date): void {
+    this.formattedDate = this.formatDate(event);
+  }
+
+  formatDate(date: Date): string {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+  
+  
   // ฟังก์ชันตรวจสอบชื่อ
   nameValidator(): ValidatorFn {
     return (control: AbstractControl): {[key: string]: any} | null => {
-      const nameRegex = /^[ก-๏a-zA-Z\s]+$/; // รองรับภาษาไทยและอังกฤษ
+      const nameRegex = /^[ก-๏a-zA-Z\s]+$/; 
       const valid = nameRegex.test(control.value) && 
-                    control.value.trim().length >= 2 && // ชื่ออย่างน้อย 2 ตัวอักษร
-                    control.value.trim().length <= 50; // จำกัดความยาวสูงสุด
+                    control.value.trim().length >= 2 && 
+                    control.value.trim().length <= 50; 
       return valid ? null : {'invalidName': {value: control.value}};
     };
   }
@@ -118,7 +137,7 @@ export class UserInfoChangeNameComponent implements OnInit {
           } 
           
           console.log("change name success")
-          this.router.navigate(['user-info']).then(() => window.location.reload());
+          // this.router.navigate(['user-info']).then(() => window.location.reload());
         },
         error: (error) => {
           console.error('have some error cant update name', error);
@@ -133,24 +152,22 @@ export class UserInfoChangeNameComponent implements OnInit {
 
   updatePhone() {
     // ตรวจสอบชื่อว่างเปล่า
-    if (!this.user?.name.trim()) {
+    if (!this.user?.phone.trim()) {
       this.dialogMessage = 'please enter new phone';
       this.showDialog();
       return;
     }
   
-    // // ตรวจสอบความถูกต้องของชื่อโดยตรง
-    // const nameRegex = /^[ก-๏a-zA-Z\s]+$/;
-    // const isValidName = nameRegex.test(this.user.name) && 
-    //                     this.user.name.trim().length >= 2 && 
-    //                     this.user.name.trim().length <= 50;
-    
-    // if (!isValidName) {
-    //   // ชื่อไม่ถูกต้อง
-    //   this.dialogMessage = 'please enter correct name (only character)';
-    //   this.showDialog();
-    //   return;
-    // }
+     // ตรวจสอบความถูกต้องของเบอร์โทรศัพท์
+     const phoneRegex = /^[0-9]{10}$/;
+     const isValidPhone = phoneRegex.test(this.user.phone.trim());
+     
+     if (!isValidPhone) {
+       // เบอร์โทรศัพท์ไม่ถูกต้อง
+       this.dialogMessage = 'กรุณาป้อนเบอร์โทรศัพท์ให้ถูกต้อง (10 หลัก)';
+       this.showDialog();
+       return;
+     }
 
     // ตรวจสอบว่ามี User และ ID
     if (this.user && this.user.id !== undefined) {  
@@ -163,7 +180,7 @@ export class UserInfoChangeNameComponent implements OnInit {
           } 
           
           console.log("change phone success")
-          this.router.navigate(['user-info']).then(() => window.location.reload());
+          // this.router.navigate(['user-info']).then(() => window.location.reload());
         },
         error: (error) => {
           console.error('have some error cant update phone', error);
@@ -175,6 +192,33 @@ export class UserInfoChangeNameComponent implements OnInit {
       alert('User Not Found please login again');
     }
   }
+
+  updateB_date() {
+    if (this.user && this.user.id !== undefined) {  
+      // ตรวจสอบว่า `formattedDate` มีค่า
+      if (this.formattedDate) {
+        this.user.b_date = this.formattedDate; // ใช้ค่าที่ถูกจัดรูปแบบแล้ว
+      }
+  
+      this.userService.updateB_date(this.user.id, this.user.b_date).subscribe({
+        next: (updatedUser: User) => {
+          if (typeof sessionStorage !== 'undefined') {
+            sessionStorage.setItem('sessionUser', JSON.stringify(updatedUser));
+            this.user = updatedUser; // อัปเดตข้อมูลผู้ใช้
+          } 
+          console.log("Change birth date success");
+        },
+        error: (error) => {
+          console.error('Unable to update birth date', error);
+          alert('Unable to update birth date');
+        }
+      });
+    } else {
+      console.error('User Not Found');
+      alert('User Not Found. Please log in again.');
+    }
+  }
+  
   
   reload() {
     window.location.reload();

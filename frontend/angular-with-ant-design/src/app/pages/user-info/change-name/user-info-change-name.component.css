@@ -1,0 +1,12 @@
+::ng-deep .p-calendar  input{
+    width: 100%;  
+    min-width: 300px;
+    height: 28px;
+    padding: 4px;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+
+input{
+    min-width: 300px;
+}

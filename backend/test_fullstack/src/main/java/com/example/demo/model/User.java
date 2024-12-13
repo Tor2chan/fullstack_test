@@ -15,6 +15,7 @@ public class User {
     private String password;
     private String profilePicture;    
     private String phone;
+    private String b_date;
 
     public User() {
         this.role = "user";  
@@ -47,4 +48,8 @@ public class User {
 
     public String getPhone() { return phone;}
     public void setPhone(String phone) {this.phone = phone; }
+    
+    public String getB_date() { return b_date;}
+    public void setB_date(String b_date) {this.b_date = b_date; }
+    
 }

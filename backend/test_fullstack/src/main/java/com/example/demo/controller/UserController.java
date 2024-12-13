@@ -114,6 +114,29 @@ public class UserController {
             }
         }
 
+        // update B_date
+        @PutMapping("/{userId}/b_date")
+        public ResponseEntity<?> updateB_date(@PathVariable Long userId, @RequestBody Map<String, String> requestBody) {
+            try {
+                String b_date = requestBody.get("b_date");
+    
+                if (b_date == null || b_date.trim().isEmpty()) {
+                    return ResponseEntity.badRequest().body("B_date cannot be empty");
+                }
+    
+                User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+    
+                user.setB_date(b_date);
+                User updatedUser = userRepository.save(user);
+    
+                return ResponseEntity.ok(updatedUser);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.internalServerError().body("Error updating user b_date: " + e.getMessage());
+            }
+        }
+
     @PutMapping("/{userId}/password")
     public ResponseEntity<?> changePassword(
         @PathVariable Long userId,

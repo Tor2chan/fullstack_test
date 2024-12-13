@@ -13,6 +13,8 @@ export interface User {
     password: string;
     selectedRole: { role: string }; 
     profilePicture?: string; 
+    phone: string;
+    b_date: string;
 }
     
 @Injectable({

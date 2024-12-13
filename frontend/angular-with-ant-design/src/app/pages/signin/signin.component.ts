@@ -69,7 +69,9 @@ export class SigninComponent {
               username: user.username, 
               name: user.name,
               role: user.role,
-              id: user.id
+              id: user.id,
+              phone: user.phone,
+              b_date: user.b_date
             }));
   
             // route and refresh

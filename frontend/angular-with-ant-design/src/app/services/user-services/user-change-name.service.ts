@@ -6,6 +6,7 @@ export interface User {
     id?: number; 
     name: string;
     phone: string;
+    b_date: string;
 }
     
 @Injectable({
@@ -22,6 +23,10 @@ export class UserChangeNameService {
 
     updatePhone(userId: number, phone: string): Observable<User> {
         return this.http.put<User>(`${this.apiUrl}/${userId}/phone`, { phone });
+    }
+
+    updateB_date(userId: number, b_date: string): Observable<User> {
+        return this.http.put<User>(`${this.apiUrl}/${userId}/b_date`, { b_date });
     }
     
 }

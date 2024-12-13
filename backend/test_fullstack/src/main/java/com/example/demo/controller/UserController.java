@@ -68,7 +68,7 @@ public class UserController {
         }
     }
 
-    // เพิ่ม API สำหรับการอัพเดตชื่อของผู้ใช้
+    // update name
     @PutMapping("/{userId}/name")
     public ResponseEntity<?> updateName(@PathVariable Long userId, @RequestBody Map<String, String> requestBody) {
         try {
@@ -90,6 +90,29 @@ public class UserController {
             return ResponseEntity.internalServerError().body("Error updating user name: " + e.getMessage());
         }
     }
+
+        // update phone
+        @PutMapping("/{userId}/phone")
+        public ResponseEntity<?> updatePhone(@PathVariable Long userId, @RequestBody Map<String, String> requestBody) {
+            try {
+                String phone = requestBody.get("phone");
+    
+                if (phone == null || phone.trim().isEmpty()) {
+                    return ResponseEntity.badRequest().body("Phone cannot be empty");
+                }
+    
+                User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+    
+                user.setPhone(phone);
+                User updatedUser = userRepository.save(user);
+    
+                return ResponseEntity.ok(updatedUser);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.internalServerError().body("Error updating user phone: " + e.getMessage());
+            }
+        }
 
     @PutMapping("/{userId}/password")
     public ResponseEntity<?> changePassword(

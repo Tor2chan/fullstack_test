@@ -14,6 +14,7 @@ public class User {
     private String role;
     private String password;
     private String profilePicture;    
+    private String phone;
 
     public User() {
         this.role = "user";  
@@ -43,4 +44,7 @@ public class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password){ this.password = password; }
+
+    public String getPhone() { return phone;}
+    public void setPhone(String phone) {this.phone = phone; }
 }

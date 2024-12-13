@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 export interface User {
     id?: number; 
     name: string;
-
+    phone: string;
 }
     
 @Injectable({
@@ -19,5 +19,9 @@ export class UserChangeNameService {
     updateName(userId: number, name: string): Observable<User> {
     return this.http.put<User>(`${this.apiUrl}/${userId}/name`, { name });
 }
+
+    updatePhone(userId: number, phone: string): Observable<User> {
+        return this.http.put<User>(`${this.apiUrl}/${userId}/phone`, { phone });
+    }
     
 }

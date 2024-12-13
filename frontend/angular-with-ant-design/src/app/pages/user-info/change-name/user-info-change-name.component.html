@@ -6,24 +6,38 @@
   </p-breadcrumb>
 </div>
 
-<div class="flex min-h-[50vh] mr-20 items-center justify-center">
-<div *ngIf="user" class="p-0 mx-4 grid grid-cols-[1fr_1fr] gap-4">
+<div class="flex min-h mr-20 items-center justify-center">
+<div *ngIf="user" class="p-0 mx-4 gap-4">
+  <!-- name -->
   <div>
-    <!-- คอลัมน์ 1 -->
-    <div class="mb-4"><h1 class="flex justify-end text-2xl font-bold m-2">Current name: </h1></div>
-    <div class="mb-4"><h1 class="flex justify-end text-2xl font-bold m-2">New name: </h1></div>
+    <div class="mb-2"><h1 class="flex text-xl font-bold my-2">name: </h1></div>
   </div>
 
-  <div>
-    <!-- คอลัมน์ 2 -->
-    <div class="mb-4"><h1 class="flex justify-start text-xl font-bold m-2">{{user.name}}</h1> </div>
-    <div class="mt-5">
+    <div class="mb-4">
       <input 
         type="text" 
         class="px-1 text-xl" 
-        [(ngModel)]="newName" 
+        [(ngModel)]="user.name" 
+        placeholder="name" 
       /> 
     </div>
+
+    <!-- phone -->
+    <div>
+      <div class="mb-2"><h1 class="flex text-xl font-bold my-2">phone number: </h1></div>
+    </div>
+  
+      <div class="mb-4">
+        <input 
+          type="text" 
+          class="px-1 text-xl" 
+          [(ngModel)]="user.phone"
+          placeholder="phone number" 
+        /> 
+      </div>
+
+
+    <!-- button -->
     <div class="mt-4">
       <button 
         (click)="reload()"
@@ -33,13 +47,12 @@
       </button>
 
       <button 
-        (click)="updateName()"
+        (click)="updateName(); updatePhone();"
         class="m-2.5 px-3 py-2.5 bg-blue-500 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed 
                hover:bg-blue-600 transition-colors">
         confirm
       </button>
     </div>
-  </div>
   
   <p-dialog
     header="Tips"

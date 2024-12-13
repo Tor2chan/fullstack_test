@@ -18,3 +18,8 @@ change input password               1
 export table to excel     --->  1
 add more component (ex. calendar, check box, radio) 0
 ***difference between 2 ways that save picture in database 
+
+    แบบเก็บไฟล์รูปจัดการรักษาข้อมูลง่ายกว่า (backup, restore),ไม่ต้องกลัวเรื่องไฟล์รูปหายเพราะเก็บไว้ที่databaseโดยตรง 
+    การจัดเก็บไฟล์ แบบเก็บไฟล์รูปจะมีข้อจำกัดของขนาดไฟล์ถ้าจะเก็บรูปที่เป็นไฟล์ขนาดใหญ่อาจจะมีปัญหาได้
+    ขนาดของไฟล์รูปจริงอาจจะทำให้กินทรัพยากรพื้นที่ในdbมากกว่า
+    เวลา Query แบบเก็บชื่อจะเร็วกว่าเพราะดึงมาแค่ชื่อ

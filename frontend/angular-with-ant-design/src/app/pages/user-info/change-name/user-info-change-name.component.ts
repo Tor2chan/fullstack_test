@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common'; 
 import { MenuItem } from 'primeng/api';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule, ValidatorFn, AbstractControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { UserChangeNameService, User } from '../../../services/user-services/user-change-name.service';
 import { DialogModule } from 'primeng/dialog';
@@ -15,7 +14,6 @@ import { ButtonModule } from 'primeng/button';
   imports: [
     CommonModule,
     BreadcrumbModule,
-    InputTextModule,
     FormsModule,
     DialogModule,
     ButtonModule
@@ -26,7 +24,6 @@ import { ButtonModule } from 'primeng/button';
 export class UserInfoChangeNameComponent implements OnInit {
   loginForm: FormGroup;
   user: User | null = null;
-  newName: string = '';
   items: MenuItem[] | undefined;
   currentProfilePicture: string | null = null;
   isNameChanged: boolean = false;
@@ -91,7 +88,7 @@ export class UserInfoChangeNameComponent implements OnInit {
 
   updateName() {
     // ตรวจสอบชื่อว่างเปล่า
-    if (!this.newName.trim()) {
+    if (!this.user?.name.trim()) {
       this.dialogMessage = 'please enter new name';
       this.showDialog();
       return;
@@ -99,9 +96,9 @@ export class UserInfoChangeNameComponent implements OnInit {
   
     // ตรวจสอบความถูกต้องของชื่อโดยตรง
     const nameRegex = /^[ก-๏a-zA-Z\s]+$/;
-    const isValidName = nameRegex.test(this.newName) && 
-                        this.newName.trim().length >= 2 && 
-                        this.newName.trim().length <= 50;
+    const isValidName = nameRegex.test(this.user.name) && 
+                        this.user.name.trim().length >= 2 && 
+                        this.user.name.trim().length <= 50;
     
     if (!isValidName) {
       // ชื่อไม่ถูกต้อง
@@ -112,15 +109,12 @@ export class UserInfoChangeNameComponent implements OnInit {
 
     // ตรวจสอบว่ามี User และ ID
     if (this.user && this.user.id !== undefined) {  
-      this.userService.updateName(this.user.id, this.newName).subscribe({
-        next: (updatedUser) => {
-          // อัปเดต Session Storage
+      this.userService.updateName(this.user.id, this.user.name).subscribe({
+        next: (updatedUser: User) => {
+          // ระบุประเภทข้อมูลให้ชัดเจน
           if (typeof sessionStorage !== 'undefined') {
-            const updatedSessionUser = { ...this.user, name: updatedUser.name };
-            sessionStorage.setItem('sessionUser', JSON.stringify(updatedSessionUser));
-            
-            // อัปเดต Local User Object
-            this.user = updatedSessionUser;
+            sessionStorage.setItem('sessionUser', JSON.stringify(updatedUser));
+            this.user = updatedUser; // ใช้ข้อมูลที่ได้จาก backend โดยตรง
           } 
           
           console.log("change name success")
@@ -131,12 +125,57 @@ export class UserInfoChangeNameComponent implements OnInit {
           alert('have some error cant update name');
         }
       });
-    } else {
+    }else {
       console.error('User Not Found');
       alert('User Not Found please login again');
     }
   }
 
+  updatePhone() {
+    // ตรวจสอบชื่อว่างเปล่า
+    if (!this.user?.name.trim()) {
+      this.dialogMessage = 'please enter new phone';
+      this.showDialog();
+      return;
+    }
+  
+    // // ตรวจสอบความถูกต้องของชื่อโดยตรง
+    // const nameRegex = /^[ก-๏a-zA-Z\s]+$/;
+    // const isValidName = nameRegex.test(this.user.name) && 
+    //                     this.user.name.trim().length >= 2 && 
+    //                     this.user.name.trim().length <= 50;
+    
+    // if (!isValidName) {
+    //   // ชื่อไม่ถูกต้อง
+    //   this.dialogMessage = 'please enter correct name (only character)';
+    //   this.showDialog();
+    //   return;
+    // }
+
+    // ตรวจสอบว่ามี User และ ID
+    if (this.user && this.user.id !== undefined) {  
+      this.userService.updatePhone(this.user.id, this.user.phone).subscribe({
+        next: (updatedUser: User) => {
+          // ระบุประเภทข้อมูลให้ชัดเจน
+          if (typeof sessionStorage !== 'undefined') {
+            sessionStorage.setItem('sessionUser', JSON.stringify(updatedUser));
+            this.user = updatedUser; // ใช้ข้อมูลที่ได้จาก backend โดยตรง
+          } 
+          
+          console.log("change phone success")
+          this.router.navigate(['user-info']).then(() => window.location.reload());
+        },
+        error: (error) => {
+          console.error('have some error cant update phone', error);
+          alert('have some error cant update phone');
+        }
+      });
+    }else {
+      console.error('User Not Found');
+      alert('User Not Found please login again');
+    }
+  }
+  
   reload() {
     window.location.reload();
   }

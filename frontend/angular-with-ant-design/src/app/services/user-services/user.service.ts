@@ -15,6 +15,7 @@ export interface User {
     profilePicture?: string; 
     phone: string;
     b_date: string;
+    gender: string;
 }
     
 @Injectable({

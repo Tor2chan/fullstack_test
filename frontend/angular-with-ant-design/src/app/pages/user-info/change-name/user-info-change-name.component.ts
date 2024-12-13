@@ -35,7 +35,13 @@ export class UserInfoChangeNameComponent implements OnInit {
   visible: boolean = false;
   dialogMessage: string = '';
   formattedDate: string | null = null; 
-  gender!: string;
+  selectedGender: any = null;
+
+  gender: any[] = [
+    { name: 'male', key: 'M' },
+    { name: 'famale', key: 'F' },
+    { name: 'other', key: 'O' },
+];
 
   constructor(
     private fb: FormBuilder, 
@@ -51,6 +57,8 @@ export class UserInfoChangeNameComponent implements OnInit {
   }
 
   ngOnInit() {
+    
+    
     this.items = [
       { label: 'info', routerLink: 'user-info'},
       { label: 'change-name'}
@@ -206,11 +214,10 @@ export class UserInfoChangeNameComponent implements OnInit {
             sessionStorage.setItem('sessionUser', JSON.stringify(updatedUser));
             this.user = updatedUser; // อัปเดตข้อมูลผู้ใช้
           } 
-          console.log("Change birth date success");
+          console.log("Change birthday success");
         },
         error: (error) => {
-          console.error('Unable to update birth date', error);
-          alert('Unable to update birth date');
+          console.error('Unable to update birthday', error);
         }
       });
     } else {
@@ -219,6 +226,33 @@ export class UserInfoChangeNameComponent implements OnInit {
     }
   }
   
+  updateGender() {
+    if (this.user && this.user.id !== undefined) {  
+      if (this.selectedGender) {
+        // อัปเดต gender ด้วยค่า key จาก selectedGender
+        this.user.gender = this.selectedGender.name;
+  
+        this.userService.updateGender(this.user.id, this.user.gender).subscribe({
+          next: (updatedUser: User) => {
+            if (typeof sessionStorage !== 'undefined') {
+              sessionStorage.setItem('sessionUser', JSON.stringify(updatedUser));
+              this.user = updatedUser; // อัปเดตข้อมูลผู้ใช้
+            } 
+            console.log("Change gender success");
+          },
+          error: (error) => {
+            console.error('Unable to update gender', error);
+          }
+        });
+      } else {
+        console.error('No gender selected');
+        alert('Please select a gender');
+      }
+    } else {
+      console.error('User Not Found');
+      alert('User Not Found. Please log in again.');
+    }
+  }
   
   reload() {
     window.location.reload();

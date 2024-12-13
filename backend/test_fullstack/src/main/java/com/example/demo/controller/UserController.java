@@ -91,52 +91,76 @@ public class UserController {
         }
     }
 
-        // update phone
-        @PutMapping("/{userId}/phone")
-        public ResponseEntity<?> updatePhone(@PathVariable Long userId, @RequestBody Map<String, String> requestBody) {
-            try {
-                String phone = requestBody.get("phone");
-    
-                if (phone == null || phone.trim().isEmpty()) {
-                    return ResponseEntity.badRequest().body("Phone cannot be empty");
-                }
-    
-                User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-    
-                user.setPhone(phone);
-                User updatedUser = userRepository.save(user);
-    
-                return ResponseEntity.ok(updatedUser);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return ResponseEntity.internalServerError().body("Error updating user phone: " + e.getMessage());
-            }
-        }
+    // update phone
+    @PutMapping("/{userId}/phone")
+    public ResponseEntity<?> updatePhone(@PathVariable Long userId, @RequestBody Map<String, String> requestBody) {
+        try {
+            String phone = requestBody.get("phone");
 
-        // update B_date
-        @PutMapping("/{userId}/b_date")
-        public ResponseEntity<?> updateB_date(@PathVariable Long userId, @RequestBody Map<String, String> requestBody) {
-            try {
-                String b_date = requestBody.get("b_date");
-    
-                if (b_date == null || b_date.trim().isEmpty()) {
-                    return ResponseEntity.badRequest().body("B_date cannot be empty");
-                }
-    
-                User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-    
-                user.setB_date(b_date);
-                User updatedUser = userRepository.save(user);
-    
-                return ResponseEntity.ok(updatedUser);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return ResponseEntity.internalServerError().body("Error updating user b_date: " + e.getMessage());
+            if (phone == null || phone.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Phone cannot be empty");
             }
-        }
 
+            User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+            user.setPhone(phone);
+            User updatedUser = userRepository.save(user);
+
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error updating user phone: " + e.getMessage());
+        }
+    }
+
+    // update B_date
+    @PutMapping("/{userId}/b_date")
+    public ResponseEntity<?> updateB_date(@PathVariable Long userId, @RequestBody Map<String, String> requestBody) {
+        try {
+            String b_date = requestBody.get("b_date");
+
+            if (b_date == null || b_date.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("B_date cannot be empty");
+            }
+
+            User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+            user.setB_date(b_date);
+            User updatedUser = userRepository.save(user);
+
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error updating user b_date: " + e.getMessage());
+        }
+    }
+
+    // update Gender
+    @PutMapping("/{userId}/gender")
+    public ResponseEntity<?> updateGender(@PathVariable Long userId, @RequestBody Map<String, String> requestBody) {
+        try {
+            String gender = requestBody.get("gender");
+
+            if (gender == null || gender.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("B_date cannot be empty");
+            }
+
+            User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+            user.setGender(gender);
+            User updatedUser = userRepository.save(user);
+
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error updating user gender: " + e.getMessage());
+        }
+    }
+
+    // update password
     @PutMapping("/{userId}/password")
     public ResponseEntity<?> changePassword(
         @PathVariable Long userId,

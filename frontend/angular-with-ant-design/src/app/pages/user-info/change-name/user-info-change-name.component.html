@@ -54,38 +54,16 @@
   
     <div class="card mb-4">
       <div class="flex flex-wrap gap-3">
-          <div class="flex align-items-center">
-              <p-radioButton 
-                  name="gender" 
-                  value="male" 
-                  [(ngModel)]="gender" 
-                  inputId="gender1" />
-              <label for="gender1" class="ml-2">
-                  male
-              </label>
-          </div>
-          
-          <div class="flex align-items-center">
-              <p-radioButton 
-                  name="gender" 
-                  value="female" 
-                  [(ngModel)]="gender" 
-                  inputId="gender2" />
-              <label for="gender2" class="ml-2">
-                  female
-              </label>
-          </div>
-          
-          <div class="flex align-items-center">
-              <p-radioButton 
-                  name="gender" 
-                  value="other" 
-                  [(ngModel)]="gender" 
-                  inputId="gender3" />
-              <label for="gender3" class="ml-2">
-                  other
-              </label>
-          </div>
+        <div *ngFor="let gender of gender" class="field-checkbox">
+          <p-radioButton 
+              [inputId]="gender.key" 
+              name="gender" 
+              [value]="gender" 
+              [(ngModel)]="selectedGender" />
+          <label [for]="gender.key" class="ml-2">
+              {{ gender.name }}
+          </label>
+      </div>
           
       </div>
   </div>
@@ -101,7 +79,7 @@
       </button>
 
       <button 
-        (click)="updateName(); updatePhone(); updateB_date();"
+        (click)="updateName(); updatePhone(); updateB_date(); updateGender()"
         class="m-2.5 px-3 py-2.5 bg-blue-500 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed 
                hover:bg-blue-600 transition-colors">
         confirm

@@ -116,11 +116,46 @@ export class UserInfoChangeNameComponent implements OnInit {
     this.visible = false;
   }
 
-  updateName() {
-    // check
+  updateAll() {
+    const updateResults = {
+      name: false,
+      phone: false,
+      b_date: false
+    };
+  
+    // Callback function to check all updates
+    const checkAllUpdates = () => {
+      if (updateResults.name && updateResults.phone && updateResults.b_date) {
+        console.log("All updates successful");
+        this.router.navigate(['user-info']);
+      }
+    };
+  
+    // Call updateName
+    this.updateNameWithCallback((success) => {
+      updateResults.name = success;
+      checkAllUpdates();
+    });
+  
+    // Call updatePhone
+    this.updatePhoneWithCallback((success) => {
+      updateResults.phone = success;
+      checkAllUpdates();
+    });
+  
+    // Call updateB_date
+    this.updateB_dateWithCallback((success) => {
+      updateResults.b_date = success;
+      checkAllUpdates();
+    });
+  }
+  
+  // Wrappers to handle callback-based results
+  updateNameWithCallback(callback: (success: boolean) => void) {
     if (!this.user?.name.trim()) {
       this.dialogMessage = 'please enter new name';
       this.showDialog();
+      callback(false);
       return;
     }
   
@@ -128,78 +163,80 @@ export class UserInfoChangeNameComponent implements OnInit {
     const isValidName = nameRegex.test(this.user.name) && 
                         this.user.name.trim().length >= 2 && 
                         this.user.name.trim().length <= 50;
-    
+  
     if (!isValidName) {
       this.dialogMessage = 'please enter correct name (only character)';
       this.showDialog();
+      callback(false);
       return;
     }
-    if (this.user && this.user.id !== undefined) {  
+  
+    if (this.user && this.user.id !== undefined) {
       this.userService.updateName(this.user.id, this.user.name).subscribe({
         next: (updatedUser: User) => {
-          
           if (typeof sessionStorage !== 'undefined') {
             sessionStorage.setItem('sessionUser', JSON.stringify(updatedUser));
             this.user = updatedUser; 
-          } 
-          
-          console.log("change name success")
-          // this.router.navigate(['user-info']).then(() => window.location.reload());
+          }
+          console.log("change name success");
+          callback(true);
         },
         error: (error) => {
           console.error('have some error cant update name', error);
           alert('have some error cant update name');
+          callback(false);
         }
       });
-    }else {
+    } else {
       console.error('User Not Found');
       alert('User Not Found please login again');
+      callback(false);
     }
   }
-
-  updatePhone() {
+  
+  updatePhoneWithCallback(callback: (success: boolean) => void) {
     if (!this.user?.phone.trim()) {
       this.dialogMessage = 'please enter new phone';
       this.showDialog();
+      callback(false);
       return;
     }
-    
-    //  check phone
-     const phoneRegex = /^[0-9]{10}$/;
-     const isValidPhone = phoneRegex.test(this.user.phone.trim());
-     
-     if (!isValidPhone) {
-       this.dialogMessage = 'please enter number (10)';
-       this.showDialog();
-       return;
-     }
-
-    // check user
-    if (this.user && this.user.id !== undefined) {  
+  
+    const phoneRegex = /^[0-9]{10}$/;
+    const isValidPhone = phoneRegex.test(this.user.phone.trim());
+  
+    if (!isValidPhone) {
+      this.dialogMessage = 'please enter number (10)';
+      this.showDialog();
+      callback(false);
+      return;
+    }
+  
+    if (this.user && this.user.id !== undefined) {
       this.userService.updatePhone(this.user.id, this.user.phone).subscribe({
         next: (updatedUser: User) => {
           if (typeof sessionStorage !== 'undefined') {
             sessionStorage.setItem('sessionUser', JSON.stringify(updatedUser));
-            this.user = updatedUser; // ใช้ข้อมูลที่ได้จาก backend โดยตรง
-          } 
-          
-          console.log("change phone success")
-          // this.router.navigate(['user-info']).then(() => window.location.reload());
+            this.user = updatedUser;
+          }
+          console.log("change phone success");
+          callback(true);
         },
         error: (error) => {
           console.error('have some error cant update phone', error);
           alert('have some error cant update phone');
+          callback(false);
         }
       });
-    }else {
+    } else {
       console.error('User Not Found');
       alert('User Not Found please login again');
+      callback(false);
     }
   }
-
-  updateB_date() {
-    if (this.user && this.user.id !== undefined) {  
-      // check formattedDate
+  
+  updateB_dateWithCallback(callback: (success: boolean) => void) {
+    if (this.user && this.user.id !== undefined) {
       if (this.formattedDate) {
         this.user.b_date = this.formattedDate; 
       }
@@ -208,47 +245,23 @@ export class UserInfoChangeNameComponent implements OnInit {
         next: (updatedUser: User) => {
           if (typeof sessionStorage !== 'undefined') {
             sessionStorage.setItem('sessionUser', JSON.stringify(updatedUser));
-            this.user = updatedUser; 
-          } 
+            this.user = updatedUser;
+          }
           console.log("Change birthday success");
+          callback(true);
         },
         error: (error) => {
           console.error('Unable to update birthday', error);
+          callback(false);
         }
       });
     } else {
       console.error('User Not Found');
       alert('User Not Found. Please log in again.');
+      callback(false);
     }
   }
   
-  updateGender() {
-    if (this.user && this.user.id !== undefined) {  
-      if (this.selectedGender) {
-        // อัปเดต gender ด้วยค่า key จาก selectedGender
-        this.user.gender = this.selectedGender.name;
-  
-        this.userService.updateGender(this.user.id, this.user.gender).subscribe({
-          next: (updatedUser: User) => {
-            if (typeof sessionStorage !== 'undefined') {
-              sessionStorage.setItem('sessionUser', JSON.stringify(updatedUser));
-              this.user = updatedUser; // อัปเดตข้อมูลผู้ใช้
-            } 
-            console.log("Change gender success");
-          },
-          error: (error) => {
-            console.error('Unable to update gender', error);
-          }
-        });
-      } else {
-        console.error('No gender selected');
-        alert('Please select a gender');
-      }
-    } else {
-      console.error('User Not Found');
-      alert('User Not Found. Please log in again.');
-    }
-  }
   
   reload() {
     window.location.reload();

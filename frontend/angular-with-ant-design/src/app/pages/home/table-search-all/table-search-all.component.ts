@@ -163,131 +163,68 @@ export class TableAll implements OnInit {
         }
     }
 
-    maskEmail(email: string): string {
+    exportToExcel() {
+        // Calculate summary statistics
+        const totalUsers = this.Users.length;
+        const totalAdmin = this.Users.filter(user => user.role === 'admin').length;
+        const totalUser = this.Users.filter(user => user.role === 'user').length;
+    
+        // Prepare summary data
+        const summaryData = [
+            { col1: 'Total Users', col2: totalUsers },
+            { col1: 'Role Admin', col2: totalAdmin },
+            { col1: 'Role User', col2: totalUser },
+            { col1: '', col2: '' } // Empty row for spacing
+        ];
+    
+        // Prepare header row
+        const headerRow = { 
+            col1: '#', 
+            col2: 'Email', 
+            col3: 'Username', 
+            col4: 'Name', 
+            col5: 'Role' 
+        };
+    
+        // Data preparation for user list
+        const exportData = this.Users.map((user, index) => ({
+            col1: index + 1,
+            col2: this.maskEmail(user.email),
+            col3: user.username,
+            col4: user.name,
+            col5: user.role
+        }));
+    
+        // Combine summary, header, and user data
+        const fullExportData = [
+            ...summaryData,
+            headerRow,
+            ...exportData
+        ];
+    
+        // Worksheet
+        const worksheet = XLSX.utils.json_to_sheet(fullExportData, { 
+            skipHeader: true // Skip default header to use our custom header
+        });
+    
+        // Workbook
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'AllUsers');
+    
+        // Download Excel
+        const fileName = `AllUsers_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(workbook, fileName);
+    }
+    
+    // Helper method to mask email (if not already defined)
+    private maskEmail(email: string): string {
+        if (!email || email.length < 4) {
+            return email;
+        }
         const firstPart = email.slice(0, 2);
         const lastPart = email.slice(-2);
         const maskedPart = '*'.repeat(email.length - 4);
         return `${firstPart}${maskedPart}${lastPart}`;
-      }
-
-    // export  Excel
-    exportToExcel() {
-        const totalUsers = this.Users.length;
-        const totalAdmin = this.Users.filter(user => user.role === 'admin').length;
-        const totalUser = this.Users.filter(user => user.role === 'user').length;
-      
-        const workbook = XLSX.utils.book_new();
-      
-        // สร้าง array สำหรับใส่ข้อมูล summary ให้เหมือน Google Sheets
-        const summaryData = [
-          {
-            values: [
-              { userEnteredValue: { stringValue: 'Total Users' }},
-              { userEnteredValue: { stringValue: `${totalUsers}` }}
-            ]
-          },
-          {
-            values: [
-              { userEnteredValue: { stringValue: 'Role Admin' }},
-              { userEnteredValue: { stringValue: `${totalAdmin}` }}
-            ]
-          },
-          {
-            values: [
-              { userEnteredValue: { stringValue: 'Role User' }},
-              { userEnteredValue: { stringValue: `${totalUser}` }}
-            ]
-          },
-          {
-            values: [
-              { userEnteredValue: { stringValue: '' }},
-              { userEnteredValue: { stringValue: '' }}
-            ]
-          }
-        ];
-      
-        // สร้าง row header สำหรับ Table ผู้ใช้งาน
-        const userHeaderRow = {
-          values: [
-            { userEnteredValue: { stringValue: '#' }},
-            { userEnteredValue: { stringValue: 'Email' }},
-            { userEnteredValue: { stringValue: 'Username' }},
-            { userEnteredValue: { stringValue: 'Name' }},
-            { userEnteredValue: { stringValue: 'Role' }}
-          ]
-        };
-      
-        const exportData = this.Users.map((user, index) => ({
-          values: [
-            { userEnteredValue: { stringValue: `${index + 1}` }},
-            { userEnteredValue: { stringValue: this.maskEmail(user.email) }},
-            { userEnteredValue: { stringValue: user.username }},
-            { userEnteredValue: { stringValue: user.name }},
-            { userEnteredValue: { stringValue: user.role }}
-          ]
-        }));
-      
-        const worksheetData = [
-          ...summaryData,
-          userHeaderRow,
-          ...exportData
-        ];
-      
-        const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-      
-        const fileName = `AllUsers_${new Date().toISOString().split('T')[0]}.xlsx`;
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'User Information');
-        XLSX.writeFile(workbook, fileName);
-      }
-      
-      
-
-    // Preview
-    exportToWebSpreadsheet() {
-        const spreadsheetHtml = `
-        <html>
-        <head>
-            <title>Preview</title>
-            <link href="styles.css" rel="stylesheet">
-        </head>
-        <body class="bg-gray-100 p-5">
-            <div class="bg-white border border-gray-300 shadow-md p-5 rounded-lg">
-                <h1 class="text-xl font-bold text-center mb-5">All Users</h1>
-                <table class="table-auto w-full border-collapse border border-gray-300">
-                    <thead>
-                        <tr class="bg-gray-200">
-                            <th class="border border-gray-300 px-4 py-2 text-left">#</th>
-                            <th class="border border-gray-300 px-4 py-2 text-left">Email</th>
-                            <th class="border border-gray-300 px-4 py-2 text-left">Username</th>
-                            <th class="border border-gray-300 px-4 py-2 text-left">Name</th>
-                            <th class="border border-gray-300 px-4 py-2 text-left">Role</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${this.Users.map((user, index) => `
-                            <tr class="${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-200">
-                                <td class="border border-gray-300 px-4 py-2">${index + 1}</td>
-                                <td class="border border-gray-300 px-4 py-2">${this.maskEmail(user.email)}</td>
-                                <td class="border border-gray-300 px-4 py-2">${user.username}</td>
-                                <td class="border border-gray-300 px-4 py-2">${user.name}</td>
-                                <td class="border border-gray-300 px-4 py-2">${user.role}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            </div>
-        </body>
-        </html>
-        `;
-    
-        // open window tab
-        const newWindow = window.open('', '_blank');
-        if (newWindow) {
-            newWindow.document.write(spreadsheetHtml);
-            newWindow.document.close();
-        } else {
-            alert('cant open new tab!');
-        }
     }
 
     exportToGoogleSheets() {

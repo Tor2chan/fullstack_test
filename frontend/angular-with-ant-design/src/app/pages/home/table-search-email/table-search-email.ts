@@ -200,71 +200,56 @@ export class TableEmail {
 
 // export  Excel
 exportToExcel() {
-    // data prep
-    const exportData = this.filteredUsers.map((user, index) => ({
-        '#': index + 1,
-        'email': this.maskEmail(user.email),
-        'username': user.username,
-        'name': user.name,
-        'role': user.role
-    }));
+  // Calculate summary statistics
+  const totalUsers = this.filteredUsers.length;
+  const totalAdmin = this.filteredUsers.filter(user => user.role === 'admin').length;
+  const totalUser = this.filteredUsers.filter(user => user.role === 'user').length;
 
-    // Worksheet
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
+  // Prepare summary data
+  const summaryData = [
+      { col1: 'Total Users', col2: totalUsers },
+      { col1: 'Role Admin', col2: totalAdmin },
+      { col1: 'Role User', col2: totalUser },
+      { col1: '', col2: '' } // Empty row for spacing
+  ];
 
-    // Workbook
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'AllUsers');
+  // Prepare header row
+  const headerRow = { 
+      col1: '#', 
+      col2: 'Email', 
+      col3: 'Username', 
+      col4: 'Name', 
+      col5: 'Role' 
+  };
 
-    // download Excel
-    const fileName = `AllUsers_${new Date().toISOString().split('T')[0]}.xlsx`;
-    XLSX.writeFile(workbook, fileName);
-}
+  // Data preparation for user list
+  const exportData = this.filteredUsers.map((user, index) => ({
+      col1: index + 1,
+      col2: this.maskEmail(user.email),
+      col3: user.username,
+      col4: user.name,
+      col5: user.role
+  }));
 
-exportToWebSpreadsheet() {
-  const spreadsheetHtml = `
-  <html>
-  <head>
-      <title>Preview</title>
-      <link href="styles.css" rel="stylesheet">
-  </head>
-  <body class="bg-gray-100 p-5">
-      <div class="bg-white border border-gray-300 shadow-md p-5 rounded-lg">
-          <h1 class="text-xl font-bold text-center mb-5">email or username (${this.filterEmail()})</h1>
-          <table class="table-auto w-full border-collapse border border-gray-300">
-              <thead>
-                  <tr class="bg-gray-200">
-                      <th class="border border-gray-300 px-4 py-2 text-left">#</th>
-                      <th class="border border-gray-300 px-4 py-2 text-left">Email</th>
-                      <th class="border border-gray-300 px-4 py-2 text-left">Username</th>
-                      <th class="border border-gray-300 px-4 py-2 text-left">Name</th>
-                      <th class="border border-gray-300 px-4 py-2 text-left">Role</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  ${this.filteredUsers.map((user, index) => `
-                      <tr class="${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-200">
-                          <td class="border border-gray-300 px-4 py-2">${index + 1}</td>
-                          <td class="border border-gray-300 px-4 py-2">${this.maskEmail(user.email)}</td>
-                          <td class="border border-gray-300 px-4 py-2">${user.username}</td>
-                          <td class="border border-gray-300 px-4 py-2">${user.name}</td>
-                          <td class="border border-gray-300 px-4 py-2">${user.role}</td>
-                      </tr>
-                  `).join('')}
-              </tbody>
-          </table>
-      </div>
-  </body>
-  </html>
-  `;
+  // Combine summary, header, and user data
+  const fullExportData = [
+      ...summaryData,
+      headerRow,
+      ...exportData
+  ];
 
-  const newWindow = window.open('', '_blank');
-  if (newWindow) {
-      newWindow.document.write(spreadsheetHtml);
-      newWindow.document.close();
-  } else {
-      alert('Cannot open new tab!');
-  }
+  // Worksheet
+  const worksheet = XLSX.utils.json_to_sheet(fullExportData, { 
+      skipHeader: true // Skip default header to use our custom header
+  });
+
+  // Workbook
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'AllUsers');
+
+  // Download Excel
+  const fileName = `AllUsers_${new Date().toISOString().split('T')[0]}.xlsx`;
+  XLSX.writeFile(workbook, fileName);
 }
 
 exportToGoogleSheets() {

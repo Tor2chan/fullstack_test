@@ -191,21 +191,33 @@ export class TableEmail {
     }
   }
 
-  // export Excel
-  exportToExcel() {
+  maskEmail(email: string): string {
+    const firstPart = email.slice(0, 2);
+    const lastPart = email.slice(-2);
+    const maskedPart = '*'.repeat(email.length - 4);
+    return `${firstPart}${maskedPart}${lastPart}`;
+  }
+
+// export  Excel
+exportToExcel() {
+    // data prep
     const exportData = this.filteredUsers.map((user, index) => ({
         '#': index + 1,
-        'Email': user.email,
-        'Username': user.username,
-        'Name': user.name,
-        'Role': user.role
+        'email': this.maskEmail(user.email),
+        'username': user.username,
+        'name': user.name,
+        'role': user.role
     }));
 
+    // Worksheet
     const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Email_Username_' + this.filterEmail());
 
-    const fileName = `Email_Username_${this.filterEmail()}.xlsx`;
+    // Workbook
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'AllUsers');
+
+    // download Excel
+    const fileName = `AllUsers_${new Date().toISOString().split('T')[0]}.xlsx`;
     XLSX.writeFile(workbook, fileName);
 }
 
@@ -233,7 +245,7 @@ exportToWebSpreadsheet() {
                   ${this.filteredUsers.map((user, index) => `
                       <tr class="${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-200">
                           <td class="border border-gray-300 px-4 py-2">${index + 1}</td>
-                          <td class="border border-gray-300 px-4 py-2">${user.email}</td>
+                          <td class="border border-gray-300 px-4 py-2">${this.maskEmail(user.email)}</td>
                           <td class="border border-gray-300 px-4 py-2">${user.username}</td>
                           <td class="border border-gray-300 px-4 py-2">${user.name}</td>
                           <td class="border border-gray-300 px-4 py-2">${user.role}</td>

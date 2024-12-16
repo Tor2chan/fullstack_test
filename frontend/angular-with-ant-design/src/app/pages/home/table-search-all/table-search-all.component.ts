@@ -163,12 +163,19 @@ export class TableAll implements OnInit {
         }
     }
 
+    maskEmail(email: string): string {
+        const firstPart = email.slice(0, 2);
+        const lastPart = email.slice(-2);
+        const maskedPart = '*'.repeat(email.length - 4);
+        return `${firstPart}${maskedPart}${lastPart}`;
+      }
+
     // export  Excel
     exportToExcel() {
         // data prep
         const exportData = this.Users.map((user, index) => ({
             '#': index + 1,
-            'email': user.email,
+            'email': this.maskEmail(user.email),
             'username': user.username,
             'name': user.name,
             'role': user.role
@@ -212,7 +219,7 @@ export class TableAll implements OnInit {
                         ${this.Users.map((user, index) => `
                             <tr class="${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-200">
                                 <td class="border border-gray-300 px-4 py-2">${index + 1}</td>
-                                <td class="border border-gray-300 px-4 py-2">${user.email}</td>
+                                <td class="border border-gray-300 px-4 py-2">${this.maskEmail(user.email)}</td>
                                 <td class="border border-gray-300 px-4 py-2">${user.username}</td>
                                 <td class="border border-gray-300 px-4 py-2">${user.name}</td>
                                 <td class="border border-gray-300 px-4 py-2">${user.role}</td>

@@ -19,16 +19,23 @@ export class GoogleSheetsService {
   exportDataToGoogleSheets(users: User[]): Observable<any> {
     // ตรวจสอบ Token ก่อนใช้
     if (!this.tokenService.currentAccessToken) {
-      // หากไม่มี Token ให้ Refresh ก่อน
+      // ถ้า Token ให้ Refresh ก่อน
       return this.tokenService.refreshAccessToken().pipe(
         switchMap(token => this.sendRequest(users, token))
       );
     }
 
-    // หากมี Token อยู่แล้ว
+    //ถ้าเจอ Token
     return this.sendRequest(users, this.tokenService.currentAccessToken);
   }
 
+  private maskEmail(email: string): string {
+    const firstPart = email.slice(0, 2);
+    const lastPart = email.slice(-2);
+    const maskedPart = '*'.repeat(email.length - 4);
+    return `${firstPart}${maskedPart}${lastPart}`;
+  }
+  
   private sendRequest(users: User[], token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
@@ -40,7 +47,7 @@ export class GoogleSheetsService {
       sheets: [{
         data: [{
           rowData: [
-            // Header row
+            // Header row 
             {
               values: [
                 { userEnteredValue: { stringValue: '#' }},
@@ -54,18 +61,18 @@ export class GoogleSheetsService {
             ...users.map((user, index) => ({
               values: [
                 { userEnteredValue: { stringValue: `${index + 1}` }},
-                { userEnteredValue: { stringValue: user.email }},
+                { userEnteredValue: { stringValue: this.maskEmail(user.email) }}, 
                 { userEnteredValue: { stringValue: user.username }},
                 { userEnteredValue: { stringValue: user.name }},
                 { userEnteredValue: { stringValue: user.role }}
               ]    
-            }))
+            }))            
           ]
         }]
       }]
     }, { headers }).pipe(
       catchError(error => {
-        // หากเกิด Error จาก Token expired
+        // Token expired
         if (error.status === 401) {
           // Refresh Token อัตโนมัติ
           return this.tokenService.refreshAccessToken().pipe(

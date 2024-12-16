@@ -172,27 +172,75 @@ export class TableAll implements OnInit {
 
     // export  Excel
     exportToExcel() {
-        // data prep
-        const exportData = this.Users.map((user, index) => ({
-            '#': index + 1,
-            'email': this.maskEmail(user.email),
-            'username': user.username,
-            'name': user.name,
-            'role': user.role
-        }));
-
-        // Worksheet
-        const worksheet = XLSX.utils.json_to_sheet(exportData);
-
-        // Workbook
+        const totalUsers = this.Users.length;
+        const totalAdmin = this.Users.filter(user => user.role === 'admin').length;
+        const totalUser = this.Users.filter(user => user.role === 'user').length;
+      
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'AllUsers');
-
-        // download Excel
+      
+        // สร้าง array สำหรับใส่ข้อมูล summary ให้เหมือน Google Sheets
+        const summaryData = [
+          {
+            values: [
+              { userEnteredValue: { stringValue: 'Total Users' }},
+              { userEnteredValue: { stringValue: `${totalUsers}` }}
+            ]
+          },
+          {
+            values: [
+              { userEnteredValue: { stringValue: 'Role Admin' }},
+              { userEnteredValue: { stringValue: `${totalAdmin}` }}
+            ]
+          },
+          {
+            values: [
+              { userEnteredValue: { stringValue: 'Role User' }},
+              { userEnteredValue: { stringValue: `${totalUser}` }}
+            ]
+          },
+          {
+            values: [
+              { userEnteredValue: { stringValue: '' }},
+              { userEnteredValue: { stringValue: '' }}
+            ]
+          }
+        ];
+      
+        // สร้าง row header สำหรับ Table ผู้ใช้งาน
+        const userHeaderRow = {
+          values: [
+            { userEnteredValue: { stringValue: '#' }},
+            { userEnteredValue: { stringValue: 'Email' }},
+            { userEnteredValue: { stringValue: 'Username' }},
+            { userEnteredValue: { stringValue: 'Name' }},
+            { userEnteredValue: { stringValue: 'Role' }}
+          ]
+        };
+      
+        const exportData = this.Users.map((user, index) => ({
+          values: [
+            { userEnteredValue: { stringValue: `${index + 1}` }},
+            { userEnteredValue: { stringValue: this.maskEmail(user.email) }},
+            { userEnteredValue: { stringValue: user.username }},
+            { userEnteredValue: { stringValue: user.name }},
+            { userEnteredValue: { stringValue: user.role }}
+          ]
+        }));
+      
+        const worksheetData = [
+          ...summaryData,
+          userHeaderRow,
+          ...exportData
+        ];
+      
+        const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+      
         const fileName = `AllUsers_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'User Information');
         XLSX.writeFile(workbook, fileName);
-    }
-
+      }
+      
+      
 
     // Preview
     exportToWebSpreadsheet() {

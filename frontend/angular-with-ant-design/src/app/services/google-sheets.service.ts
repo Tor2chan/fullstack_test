@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User } from './user.model';
 import { TokenService } from './token.service';
-import { Observable } from 'rxjs';
+import { empty, Observable } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 
 @Injectable({
@@ -28,26 +28,49 @@ export class GoogleSheetsService {
     //ถ้าเจอ Token
     return this.sendRequest(users, this.tokenService.currentAccessToken);
   }
-
-  private maskEmail(email: string): string {
-    const firstPart = email.slice(0, 2);
-    const lastPart = email.slice(-2);
-    const maskedPart = '*'.repeat(email.length - 4);
-    return `${firstPart}${maskedPart}${lastPart}`;
-  }
-  
   private sendRequest(users: User[], token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-
+  
+    // สรุปข้อมูล
+    const totalUsers = users.length;
+    const totalAdmin = users.filter(user => user.role === 'admin').length;
+    const totalUser = users.filter(user => user.role === 'user').length;
+  
     return this.http.post(this.SHEET_API_URL, {
       properties: { title: 'Angular Exported Users' },
       sheets: [{
         data: [{
           rowData: [
-            // Header row 
+                        // Summary rows
+            {
+              values: [
+                { userEnteredValue: { stringValue: 'Total Users' }},
+                { userEnteredValue: { stringValue: `${totalUsers}` }}
+              ]
+            },
+            {
+              values: [
+                { userEnteredValue: { stringValue: 'Role Admin' }},
+                { userEnteredValue: { stringValue: `${totalAdmin}` }}
+              ]
+            },
+            {
+              values: [
+                { userEnteredValue: { stringValue: 'Role User' }},
+                { userEnteredValue: { stringValue: `${totalUser}` }}
+              ]
+            },
+            // empty
+            {
+              values: [
+                { userEnteredValue: { stringValue: '' }},
+                { userEnteredValue: { stringValue: '' }}
+              ]
+            },
+            // Header row
             {
               values: [
                 { userEnteredValue: { stringValue: '#' }},
@@ -61,20 +84,20 @@ export class GoogleSheetsService {
             ...users.map((user, index) => ({
               values: [
                 { userEnteredValue: { stringValue: `${index + 1}` }},
-                { userEnteredValue: { stringValue: this.maskEmail(user.email) }}, 
+                { userEnteredValue: { stringValue: this.maskEmail(user.email) }},
                 { userEnteredValue: { stringValue: user.username }},
                 { userEnteredValue: { stringValue: user.name }},
                 { userEnteredValue: { stringValue: user.role }}
-              ]    
-            }))            
+              ]
+            })),
+
           ]
         }]
       }]
     }, { headers }).pipe(
       catchError(error => {
-        // Token expired
+        // Handle Token expiration error
         if (error.status === 401) {
-          // Refresh Token อัตโนมัติ
           return this.tokenService.refreshAccessToken().pipe(
             switchMap(newToken => this.sendRequest(users, newToken))
           );
@@ -83,4 +106,14 @@ export class GoogleSheetsService {
       })
     );
   }
-}
+  
+  private maskEmail(email: string): string {
+    if (!email || email.length < 4) {
+      return email;
+    }
+    const firstPart = email.slice(0, 2);
+    const lastPart = email.slice(-2);
+    const maskedPart = '*'.repeat(email.length - 4);
+    return `${firstPart}${maskedPart}${lastPart}`;
+  }
+}  

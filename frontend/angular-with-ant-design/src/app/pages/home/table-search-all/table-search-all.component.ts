@@ -127,7 +127,7 @@ export class TableAll implements OnInit {
                         window.location.reload();
                     },
                     error: (error) => {
-                        console.error('delete user error:', error);
+                        console.error('failed to delete ', error);
                     }
                 });
             }

@@ -152,7 +152,7 @@ export class TableEmail {
                       window.location.reload();
                   },
                   error: (error) => {
-                      console.error('เกิดข้อผิดพลาดในการลบผู้ใช้:', error);
+                      console.error('failed to delete:', error);
                   }
               });
           }

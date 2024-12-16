@@ -42,7 +42,7 @@
     </div>
   
       <div class="mb-4">
-        <p-calendar [(ngModel)]="user.b_date" [dateFormat]="'dd/mm/yy'" 
+        <p-calendar   [readonlyInput]="true" [(ngModel)]="user.b_date" [dateFormat]="'dd/mm/yy'" 
         (onSelect)="onDateSelect($event) ">
       ></p-calendar>
       </div>

@@ -2,21 +2,27 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User } from './user.model';
 import { TokenService } from './token.service';
-import { empty, Observable } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { catchError, switchMap, map } from 'rxjs/operators';
+
+interface SpreadsheetResponse {
+  spreadsheetId: string;
+  spreadsheetUrl?: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class GoogleSheetsService {
   private SHEET_API_URL = 'https://sheets.googleapis.com/v4/spreadsheets';
+  private DRIVE_API_URL = 'https://www.googleapis.com/drive/v3/files';
 
   constructor(
     private http: HttpClient, 
     private tokenService: TokenService
   ) {}
 
-  exportDataToGoogleSheets(users: User[]): Observable<any> {
+  exportDataToGoogleSheets(users: User[]): Observable<SpreadsheetResponse> {
     // ตรวจสอบ Token ก่อนใช้
     if (!this.tokenService.currentAccessToken) {
       // ถ้า Token ให้ Refresh ก่อน
@@ -28,23 +34,24 @@ export class GoogleSheetsService {
     //ถ้าเจอ Token
     return this.sendRequest(users, this.tokenService.currentAccessToken);
   }
-  private sendRequest(users: User[], token: string): Observable<any> {
+
+  private sendRequest(users: User[], token: string): Observable<SpreadsheetResponse> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
   
-    // สรุปข้อมูล
+    // sum
     const totalUsers = users.length;
     const totalAdmin = users.filter(user => user.role === 'admin').length;
     const totalUser = users.filter(user => user.role === 'user').length;
   
-    return this.http.post(this.SHEET_API_URL, {
-      properties: { title: 'Angular Exported Users' },
+    return this.http.post<SpreadsheetResponse>(this.SHEET_API_URL, {
+      properties: { title: 'Exported Users' },
       sheets: [{
         data: [{
           rowData: [
-                        // Summary rows
+            // Summary rows
             {
               values: [
                 { userEnteredValue: { stringValue: 'Total Users' }},
@@ -90,7 +97,6 @@ export class GoogleSheetsService {
                 { userEnteredValue: { stringValue: user.role }}
               ]
             })),
-
           ]
         }]
       }]
@@ -100,6 +106,43 @@ export class GoogleSheetsService {
         if (error.status === 401) {
           return this.tokenService.refreshAccessToken().pipe(
             switchMap(newToken => this.sendRequest(users, newToken))
+          );
+        }
+        throw error;
+      }),
+      switchMap(response => this.updateSheetPermissions(response.spreadsheetId, token)
+        .pipe(map(() => ({
+          spreadsheetId: response.spreadsheetId,
+          spreadsheetUrl: `https://docs.google.com/spreadsheets/d/${response.spreadsheetId}/edit`
+        })))
+      )
+    );
+  }
+  
+  private updateSheetPermissions(spreadsheetId: string, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    // permission
+    const permissionBody = {
+      role: 'reader',
+      type: 'anyone'
+    };
+
+    return this.http.post(`${this.DRIVE_API_URL}/${spreadsheetId}/permissions`, permissionBody, { headers }).pipe(
+      catchError(error => {
+        // Handle Token expiration error
+        if (error.status === 401) {
+          return this.tokenService.refreshAccessToken().pipe(
+            switchMap(newToken => {
+              const refreshedHeaders = new HttpHeaders({
+                Authorization: `Bearer ${newToken}`,
+                'Content-Type': 'application/json'
+              });
+              return this.http.post(`${this.DRIVE_API_URL}/${spreadsheetId}/permissions`, permissionBody, { headers: refreshedHeaders });
+            })
           );
         }
         throw error;
@@ -116,4 +159,4 @@ export class GoogleSheetsService {
     const maskedPart = '*'.repeat(email.length - 4);
     return `${firstPart}${maskedPart}${lastPart}`;
   }
-}  
+}

@@ -43,22 +43,38 @@ export class HomeComponent {
       username: ['', [
         Validators.required, 
         Validators.minLength(6),
-        Validators.pattern(/^[a-zA-Z]+$/) 
-      ]],
+      ]],      
       name: ['', [
         Validators.required, 
         this.nameValidator()
       ]],
       password: ['', [
         Validators.required, 
-        Validators.minLength(6), 
         this.passwordValidator()
       ]]
     });
   }
 
-  // Email Validator
-  emailValidator(): ValidatorFn {
+  ngOnInit(): void {
+    this.userService.getUsers().subscribe((data) => (this.users = data));
+
+    if (typeof sessionStorage !== 'undefined') {
+      const sessionUser = sessionStorage.getItem('sessionUser');
+      if (sessionUser) {
+        const user = JSON.parse(sessionUser);
+        if (user.role === 'admin') {
+          console.log('access admin');
+        } else if (user.role === 'user') {
+          this.router.navigate(['user-info']);
+        }
+      } else {
+        this.router.navigate(['signin']); 
+      }
+    }
+  }
+
+   // Email Validator
+   emailValidator(): ValidatorFn {
     return (control: AbstractControl): {[key: string]: any} | null => {
       const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
       const valid = emailRegex.test(control.value);
@@ -82,28 +98,10 @@ export class HomeComponent {
       const hasLetter = /[a-zA-Z]/.test(value);
       const hasNumber = /[0-9]/.test(value);
       const valid = hasLetter && hasNumber;
-      return valid ? null : { 'invalidPassword': { value: control.value } };
+      return valid ? null : {'invalidPassword': {value: control.value}};
     };
   }
-
-  ngOnInit(): void {
-    this.userService.getUsers().subscribe((data) => (this.users = data));
-
-    if (typeof sessionStorage !== 'undefined') {
-      const sessionUser = sessionStorage.getItem('sessionUser');
-      if (sessionUser) {
-        const user = JSON.parse(sessionUser);
-        if (user.role === 'admin') {
-          console.log('access admin');
-        } else if (user.role === 'user') {
-          this.router.navigate(['user-info']);
-        }
-      } else {
-        this.router.navigate(['signin']); 
-      }
-    }
-  }
-
+  
   onSubmit() {
     this.submitted = true;
   }
@@ -111,6 +109,7 @@ export class HomeComponent {
   addUser(): void {
     this.submitted = true;
 
+    // Trim ค่า username
     const usernameControl = this.loginForm.get('username');
     if (usernameControl?.value) {
       usernameControl.setValue(usernameControl.value.trim());
@@ -165,6 +164,7 @@ export class HomeComponent {
         // this.dialogMessage = 'User added successfully';
         // this.showDialog();
         window.location.reload();
+
       },
       error: (error) => {
         console.error('Error adding user:', error);

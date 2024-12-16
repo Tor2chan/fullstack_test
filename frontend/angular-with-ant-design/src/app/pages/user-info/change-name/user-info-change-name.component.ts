@@ -60,7 +60,7 @@ export class UserInfoChangeNameComponent implements OnInit {
     
       this.items = [
       { label: 'info', routerLink: 'user-info'},
-      { label: 'change-name'}
+      { label: 'change general info'}
     ];
 
     // session

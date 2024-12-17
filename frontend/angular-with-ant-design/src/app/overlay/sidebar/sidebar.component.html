@@ -2,6 +2,11 @@
         <p-menubar [model]="items">
             <ng-template pTemplate="end">
                 <div class="flex align-items-center gap-4 mr-4">
+                    <span class="flex mt-5"><img 
+                        [src]="currentProfilePicture" 
+                        alt="Current Profile Picture" 
+                        class="max-w-[40px] max-h-[40px] rounded-full object-cover mb-5"
+                      ></span>
                     <span *ngIf="isLoggedIn" class="mr-2">
                         {{ userName }} ({{ userUsername }})
                     </span>

@@ -3,6 +3,8 @@ import { MenuItem } from 'primeng/api';
 import { MenubarModule } from 'primeng/menubar';
 import { Router } from '@angular/router';  
 import { CommonModule } from '@angular/common'; 
+import { UserService } from '../../services/user-services/user.service';
+
 
 @Component({
   selector: 'app-sidebar',
@@ -12,25 +14,30 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
+  user: any = null;
   items: MenuItem[] | undefined;
   isLoggedIn: boolean = false;
   isAdmin: boolean = false;
   userName: string = '';
   userUsername: string = '';
+  currentProfilePicture: string | null = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private userService: UserService) {}
 
   ngOnInit() {
     if (typeof window !== 'undefined' && window.sessionStorage) {
       const sessionUser = sessionStorage.getItem('sessionUser');
       if (sessionUser) {
-        const user = JSON.parse(sessionUser);
+        this.user = JSON.parse(sessionUser);
+        this.loadCurrentProfilePicture(this.user.id);
+
         this.isLoggedIn = true;
-        this.isAdmin = user.role === 'admin'; // ตรวจสอบ role ของผู้ใช้
+        this.isAdmin = this.user.role === 'admin'; // ตรวจสอบ role ของผู้ใช้
         
         // Set user name and username
-        this.userName = user.name || 'User';
-        this.userUsername = user.username || '';
+        this.userName = this.user.name || 'User';
+        this.userUsername = this.user.username || '';
+
       }
     }
 
@@ -49,6 +56,22 @@ export class SidebarComponent implements OnInit {
         command: () => { this.router.navigate(['admin']) }
       });
     }
+  }
+
+  loadCurrentProfilePicture(userId: number): void {
+    this.userService.getProfilePictureUrl(userId).subscribe({
+      next: (response) => {
+        if (response.profilePicture) {
+          this.currentProfilePicture = `http://localhost:8080/profile-pictures/${response.profilePicture}`;
+        } else {
+          this.currentProfilePicture = 'assets/default-profile.png'; 
+        }
+      },
+      error: (err) => {
+        console.error('Error loading profile picture', err);
+        this.currentProfilePicture = 'assets/default-profile.png';
+      }
+    });
   }
 
   signup_redirect() {

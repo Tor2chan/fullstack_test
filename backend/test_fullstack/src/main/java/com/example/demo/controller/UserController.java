@@ -137,7 +137,7 @@ public class UserController {
         }
     }
 
-    // update Gender
+    // update Gender `
     @PutMapping("/{userId}/gender")
     public ResponseEntity<?> updateGender(@PathVariable Long userId, @RequestBody Map<String, String> requestBody) {
         try {
@@ -191,7 +191,7 @@ public class UserController {
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating password: " + e.getMessage());
         }
     }
@@ -244,6 +244,8 @@ public class UserController {
         response.put("profilePicture", user.getProfilePicture());
         return ResponseEntity.ok(response);
     }
+
+    
 }
 
 

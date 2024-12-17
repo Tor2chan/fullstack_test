@@ -101,6 +101,7 @@ export class UserInfoChangePictureComponent implements OnInit {
       response => {
         console.log('Upload success:', response);
         this.router.navigate(['user-info']);
+        window.location.reload();
       },
       error => {
         console.error('Upload error:', error);

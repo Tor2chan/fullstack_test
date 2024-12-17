@@ -128,6 +128,7 @@ export class UserInfoChangeNameComponent implements OnInit {
       if (updateResults.name && updateResults.phone && updateResults.b_date) {
         console.log("All updates successful");
         this.router.navigate(['user-info']);
+        window.location.reload();
       }
     };
   
